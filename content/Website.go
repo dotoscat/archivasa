@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"text/template"
 )
 
@@ -12,6 +13,16 @@ import (
 type Website struct {
 	Title string
 	Pages []*Document
+}
+
+type WebsiteDocument struct {
+	Website
+	Document
+	Content string
+}
+
+func NewWebsiteDocument(w *Website, d *Document) *WebsiteDocument {
+	return &WebsiteDocument{*w, *d, "something"}
 }
 
 func NewWebsite(title string) *Website {
@@ -22,6 +33,7 @@ func NewWebsite(title string) *Website {
 func Export(title string, cwd string) {
 	site := NewWebsite(title)
 	outputDirectory := path.Join(cwd, "output")
+	pagesDirectory := path.Join(outputDirectory, "pages")
 
 	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
 		os.Mkdir(outputDirectory, os.ModePerm)
@@ -47,6 +59,23 @@ func Export(title string, cwd string) {
 	index := template.Must(template.ParseFiles("./theme/templates/basic.tmpl", "./theme/templates/index.tmpl"))
 	if err := index.Execute(salidaIndex, site); err != nil {
 		log.Fatal(err)
+	}
+	document := template.Must(template.ParseFiles("./theme/templates/basic.tmpl", "./theme/templates/document.tmpl"))
+	for _, page := range site.Pages {
+		if _, err := os.Stat(pagesDirectory); os.IsNotExist(err) {
+			os.Mkdir(pagesDirectory, os.ModePerm)
+		}
+		pageOutputPath := filepath.Join(outputDirectory, page.URL)
+		fmt.Println("page output:", pageOutputPath)
+		pageOutput, err := os.Create(pageOutputPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		websiteDocument := NewWebsiteDocument(site, page)
+		if err := document.Execute(pageOutput, websiteDocument); err != nil {
+			log.Fatal(err)
+		}
+		//if err := document.Execute(websiteDocument)
 	}
 }
 

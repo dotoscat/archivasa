@@ -11,11 +11,10 @@ import (
 )
 
 type Document struct {
-	Name       string
-	Path       string
-	OutputPath string
-	Markdown   string
-	URL        string
+	Name     string
+	Path     string
+	Markdown string
+	URL      string
 }
 
 func NewDocument(path string, outputPath string, prefixURL string) *Document {
@@ -24,7 +23,7 @@ func NewDocument(path string, outputPath string, prefixURL string) *Document {
 	URLbase := strings.ReplaceAll(spaces.ReplaceAllString(base, "-"), ".md", ".html")
 	URL := filepath.Join(prefixURL, URLbase)
 	name := strings.TrimSuffix(base, filepath.Ext(base))
-	return &Document{name, path, outputPath, "", URL}
+	return &Document{name, path, "", URL}
 }
 
 func (post *Document) String() string {
