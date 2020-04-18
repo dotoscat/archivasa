@@ -7,6 +7,8 @@ import (
 	"path"
 	"path/filepath"
 	"text/template"
+
+	"github.com/gomarkdown/markdown"
 )
 
 // Website contains data about the site
@@ -27,6 +29,18 @@ func NewWebsiteDocument(w *Website, d *Document) *WebsiteDocument {
 
 func NewWebsite(title string) *Website {
 	return &Website{title, nil}
+}
+
+func (wd *WebsiteDocument) Render(outputDirectory string, document *template.Template) {
+	wd.Content = string(markdown.ToHTML(wd.Markdown, nil, nil))
+	pageOutputPath := filepath.Join(outputDirectory, wd.URL)
+	pageOutput, err := os.Create(pageOutputPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if err := document.Execute(pageOutput, wd); err != nil {
+		log.Fatal(err)
+	}
 }
 
 // Export generates content
@@ -65,17 +79,8 @@ func Export(title string, cwd string) {
 		if _, err := os.Stat(pagesDirectory); os.IsNotExist(err) {
 			os.Mkdir(pagesDirectory, os.ModePerm)
 		}
-		pageOutputPath := filepath.Join(outputDirectory, page.URL)
-		fmt.Println("page output:", pageOutputPath)
-		pageOutput, err := os.Create(pageOutputPath)
-		if err != nil {
-			log.Fatal(err)
-		}
 		websiteDocument := NewWebsiteDocument(site, page)
-		if err := document.Execute(pageOutput, websiteDocument); err != nil {
-			log.Fatal(err)
-		}
-		//if err := document.Execute(websiteDocument)
+		websiteDocument.Render(outputDirectory, document)
 	}
 }
 

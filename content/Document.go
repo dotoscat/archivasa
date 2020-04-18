@@ -13,7 +13,7 @@ import (
 type Document struct {
 	Name     string
 	Path     string
-	Markdown string
+	Markdown []byte
 	URL      string
 }
 
@@ -23,7 +23,7 @@ func NewDocument(path string, outputPath string, prefixURL string) *Document {
 	URLbase := strings.ReplaceAll(spaces.ReplaceAllString(base, "-"), ".md", ".html")
 	URL := filepath.Join(prefixURL, URLbase)
 	name := strings.TrimSuffix(base, filepath.Ext(base))
-	return &Document{name, path, "", URL}
+	return &Document{name, path, nil, URL}
 }
 
 func (post *Document) String() string {
@@ -43,7 +43,7 @@ func (post *Document) Read() {
 	//delimiter := regexp.MustCompile("---")
 	content := string(rawContent)
 	chunks := strings.Split(content, "---")
-	post.Markdown = chunks[1]
+	post.Markdown = []byte(chunks[1])
 	fmt.Println(post.Path)
 	fmt.Println(post.Markdown)
 
