@@ -2,14 +2,13 @@ package content
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
-	"text/template"
 
 	"github.com/dotoscat/archivasa/theme"
-
 	"github.com/gomarkdown/markdown"
 )
 
@@ -48,6 +47,7 @@ func (wd *WebsiteDocument) Render(outputDirectory string, document *template.Tem
 // Export generates content
 func Export(title string, cwd string) {
 	site := NewWebsite(title)
+	theme := theme.New(cwd)
 	outputDirectory := path.Join(cwd, "output")
 	pagesDirectory := path.Join(outputDirectory, "pages")
 
@@ -72,11 +72,10 @@ func Export(title string, cwd string) {
 		log.Fatal(err)
 	}
 	defer salidaIndex.Close()
-	index := template.Must(template.ParseFiles("./theme/templates/basic.tmpl", "./theme/templates/index.tmpl"))
-	if err := index.Execute(salidaIndex, site); err != nil {
+	if err := theme.Index().Execute(salidaIndex, site); err != nil {
 		log.Fatal(err)
 	}
-	document := template.Must(template.ParseFiles("./theme/templates/basic.tmpl", "./theme/templates/document.tmpl"))
+	document := theme.Document()
 	for _, page := range site.Pages {
 		if _, err := os.Stat(pagesDirectory); os.IsNotExist(err) {
 			os.Mkdir(pagesDirectory, os.ModePerm)
@@ -84,7 +83,7 @@ func Export(title string, cwd string) {
 		websiteDocument := NewWebsiteDocument(site, page)
 		websiteDocument.Render(outputDirectory, document)
 	}
-	theme.Copy(cwd, outputDirectory)
+	theme.Copy(outputDirectory)
 }
 
 func (site *Website) String() string {
