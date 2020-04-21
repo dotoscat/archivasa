@@ -2,12 +2,12 @@ package theme
 
 import (
 	"fmt"
-	"html/template"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"text/template"
 )
 
 type Theme struct {

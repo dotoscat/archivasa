@@ -2,11 +2,11 @@ package content
 
 import (
 	"fmt"
-	"html/template"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
+	"text/template"
 
 	"github.com/dotoscat/archivasa/theme"
 	"github.com/gomarkdown/markdown"
