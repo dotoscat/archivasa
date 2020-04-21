@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 	"text/template"
 
+	"github.com/dotoscat/archivasa/theme"
+
 	"github.com/gomarkdown/markdown"
 )
 
@@ -82,6 +84,7 @@ func Export(title string, cwd string) {
 		websiteDocument := NewWebsiteDocument(site, page)
 		websiteDocument.Render(outputDirectory, document)
 	}
+	theme.Copy(cwd, outputDirectory)
 }
 
 func (site *Website) String() string {
