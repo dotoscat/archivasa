@@ -8,11 +8,13 @@ import (
 	"os"
 	"path/filepath"
 	"text/template"
+
+	"github.com/dotoscat/archivasa/context"
 )
 
 type Theme struct {
-	index, document *template.Template
-	cwd, folder     string
+	templates   map[string]*template.Template
+	cwd, folder string
 }
 
 func New(cwd string) *Theme {
@@ -22,20 +24,22 @@ func New(cwd string) *Theme {
 	indexTemplatePath := filepath.Join(templatePath, "index.tmpl")
 	documentTemplatePath := filepath.Join(templatePath, "document.tmpl")
 
-	index := template.Must(template.ParseFiles(basicTemplatePath, indexTemplatePath))
-	document := template.Must(template.ParseFiles(basicTemplatePath, documentTemplatePath))
-
 	folder := filepath.Join(cwd, "theme")
 
-	return &Theme{index, document, cwd, folder}
+	templates := map[string]*template.Template{
+		"index":    template.Must(template.ParseFiles(basicTemplatePath, indexTemplatePath)),
+		"document": template.Must(template.ParseFiles(basicTemplatePath, documentTemplatePath)),
+	}
+
+	return &Theme{templates, cwd, folder}
 }
 
 func (t *Theme) Index() *template.Template {
-	return t.index
+	return t.templates["index"]
 }
 
 func (t *Theme) Document() *template.Template {
-	return t.document
+	return t.templates["document"]
 }
 
 func (t *Theme) Copy(outputFolder string) {
@@ -43,6 +47,22 @@ func (t *Theme) Copy(outputFolder string) {
 	outputFolderCSSFolder := filepath.Join(outputFolder, "css")
 	fmt.Println(CSSFolder, outputFolderCSSFolder)
 	copyFolder(CSSFolder, outputFolderCSSFolder)
+}
+
+func (t *Theme) Render(templateName, outputDirectory string, ctx context.Context) {
+	pageOutputPath := filepath.Join(outputDirectory, ctx.URL())
+	pageOutput, err := os.Create(pageOutputPath)
+	defer pageOutput.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	template := t.templates[templateName]
+	if template == nil {
+		log.Fatalf("%v template is nil", templateName)
+	}
+	if err := template.Execute(pageOutput, ctx); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func copyFolder(src, dst string) {

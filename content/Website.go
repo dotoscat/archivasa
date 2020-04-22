@@ -5,43 +5,23 @@ import (
 	"log"
 	"os"
 	"path"
-	"path/filepath"
-	"text/template"
 
 	"github.com/dotoscat/archivasa/theme"
-	"github.com/gomarkdown/markdown"
 )
 
 // Website contains data about the site
 type Website struct {
 	Title string
 	Pages []*Document
-}
-
-type WebsiteDocument struct {
-	Website
-	Document
-	Content string
-}
-
-func NewWebsiteDocument(w *Website, d *Document) *WebsiteDocument {
-	return &WebsiteDocument{*w, *d, "something"}
+	url   string
 }
 
 func NewWebsite(title string) *Website {
-	return &Website{title, nil}
+	return &Website{title, nil, "/index.html"}
 }
 
-func (wd *WebsiteDocument) Render(outputDirectory string, document *template.Template) {
-	wd.Content = string(markdown.ToHTML(wd.Markdown, nil, nil))
-	pageOutputPath := filepath.Join(outputDirectory, wd.URL)
-	pageOutput, err := os.Create(pageOutputPath)
-	if err != nil {
-		log.Fatal(err)
-	}
-	if err := document.Execute(pageOutput, wd); err != nil {
-		log.Fatal(err)
-	}
+func (site *Website) URL() string {
+	return site.url
 }
 
 // Export generates content
@@ -65,23 +45,14 @@ func Export(title string, cwd string) {
 		aPage := NewDocument(aPath, "here", "/pages/")
 		aPage.Read()
 		site.Pages[i] = aPage
-		fmt.Println(aPage.URL)
 	}
-	salidaIndex, err := os.Create(path.Join(outputDirectory, "index.html"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer salidaIndex.Close()
-	if err := theme.Index().Execute(salidaIndex, site); err != nil {
-		log.Fatal(err)
-	}
-	document := theme.Document()
+	theme.Render("index", outputDirectory, site)
 	for _, page := range site.Pages {
 		if _, err := os.Stat(pagesDirectory); os.IsNotExist(err) {
 			os.Mkdir(pagesDirectory, os.ModePerm)
 		}
 		websiteDocument := NewWebsiteDocument(site, page)
-		websiteDocument.Render(outputDirectory, document)
+		theme.Render("document", outputDirectory, websiteDocument)
 	}
 	theme.Copy(outputDirectory)
 }

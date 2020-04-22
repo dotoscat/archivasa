@@ -14,7 +14,7 @@ type Document struct {
 	Name     string
 	Path     string
 	Markdown []byte
-	URL      string
+	Url      string
 }
 
 func NewDocument(path string, outputPath string, prefixURL string) *Document {
