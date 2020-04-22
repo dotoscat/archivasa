@@ -42,7 +42,7 @@ func Export(title string, cwd string) {
 		log.Fatalln(error)
 	}
 	for i, aPath := range pagePaths {
-		aPage := NewDocument(aPath, "here", "/pages/")
+		aPage := NewDocument(aPath, "/pages/")
 		aPage.Read()
 		site.Pages[i] = aPage
 	}

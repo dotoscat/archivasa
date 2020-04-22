@@ -35,3 +35,9 @@ func PathsFromPages(cwd string) ([]string, error) {
 	println("path", path)
 	return pathsFrom(path)
 }
+
+func PathsFromPosts(cwd string) ([]string, error) {
+	path := filepath.Join(cwd, "posts")
+	println("path", path)
+	return pathsFrom(path)
+}

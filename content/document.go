@@ -17,12 +17,14 @@ type Document struct {
 	Url      string
 }
 
-func NewDocument(path string, outputPath string, prefixURL string) *Document {
+func NewDocument(path string, prefixURL string) *Document {
 	base := filepath.Base(path)
 	spaces := regexp.MustCompile("\\s")
+	dash := regexp.MustCompile("-|_")
 	URLbase := strings.ReplaceAll(spaces.ReplaceAllString(base, "-"), ".md", ".html")
 	URL := filepath.Join(prefixURL, URLbase)
-	name := strings.TrimSuffix(base, filepath.Ext(base))
+	name := strings.TrimSuffix(dash.ReplaceAllString(base, " "), filepath.Ext(base))
+	fmt.Println("name", name)
 	return &Document{name, path, nil, URL}
 }
 
