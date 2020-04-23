@@ -2,7 +2,6 @@ package content
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path"
 
@@ -30,22 +29,15 @@ func Export(title string, cwd string) {
 	theme := theme.New(cwd)
 	outputDirectory := path.Join(cwd, "output")
 	pagesDirectory := path.Join(outputDirectory, "pages")
+	// postsDirectory := path.Join(outputDirectory, "posts")
 
 	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
 		os.Mkdir(outputDirectory, os.ModePerm)
 	}
 	contentFolder := path.Join(cwd, "content")
+	contentPagesDirectory := path.Join(contentFolder, "pages")
 	fmt.Println("content folder", contentFolder)
-	pagePaths, error := PathsFromPages(contentFolder)
-	site.Pages = make([]*Document, len(pagePaths))
-	if error != nil {
-		log.Fatalln(error)
-	}
-	for i, aPath := range pagePaths {
-		aPage := NewDocument(aPath, "/pages/")
-		aPage.Read()
-		site.Pages[i] = aPage
-	}
+	site.Pages = GetDocumentsFromDir(contentPagesDirectory)
 	theme.Render("index", outputDirectory, site)
 	for _, page := range site.Pages {
 		if _, err := os.Stat(pagesDirectory); os.IsNotExist(err) {

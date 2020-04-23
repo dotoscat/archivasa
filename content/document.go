@@ -17,15 +17,28 @@ type Document struct {
 	Url      string
 }
 
-func NewDocument(path string, prefixURL string) *Document {
-	base := filepath.Base(path)
-	spaces := regexp.MustCompile("\\s")
+func NewDocument(path, base string) *Document {
+	// spaces := regexp.MustCompile("\\s") // TODO: Use this line for exporting
 	dash := regexp.MustCompile("-|_")
-	URLbase := strings.ReplaceAll(spaces.ReplaceAllString(base, "-"), ".md", ".html")
-	URL := filepath.Join(prefixURL, URLbase)
 	name := strings.TrimSuffix(dash.ReplaceAllString(base, " "), filepath.Ext(base))
 	fmt.Println("name", name)
-	return &Document{name, path, nil, URL}
+	return &Document{name, path, nil, ""}
+}
+
+func GetDocumentsFromDir(dirname string) []*Document {
+	files, err := ioutil.ReadDir(dirname)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	documents := make([]*Document, len(files))
+	for i, file := range files {
+		if file.IsDir() {
+			continue
+		}
+		path := filepath.Join(dirname, file.Name())
+		documents[i] = NewDocument(path, file.Name())
+	}
+	return documents
 }
 
 func (post *Document) String() string {
