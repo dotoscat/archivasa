@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+var spaces *regexp.Regexp = regexp.MustCompile("\\s")
+
 type Document struct {
 	Name     string
 	Path     string
@@ -18,7 +20,6 @@ type Document struct {
 }
 
 func NewDocument(path, base string) *Document {
-	// spaces := regexp.MustCompile("\\s") // TODO: Use this line for exporting
 	dash := regexp.MustCompile("-|_")
 	name := strings.TrimSuffix(dash.ReplaceAllString(base, " "), filepath.Ext(base))
 	fmt.Println("name", name)
@@ -39,6 +40,16 @@ func GetDocumentsFromDir(dirname string) []*Document {
 		documents[i] = NewDocument(path, file.Name())
 	}
 	return documents
+}
+
+func (post *Document) JoinPrefixURL(prefix string) string {
+	name := spaces.ReplaceAllString(post.Name, "-")
+	post.Url = filepath.Join(prefix, name)
+	return post.Url
+}
+
+func (post *Document) BaseURL() string {
+	return filepath.Base(post.Url)
 }
 
 func (post *Document) String() string {

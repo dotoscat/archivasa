@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 
 	"github.com/dotoscat/archivasa/theme"
 )
@@ -13,22 +14,25 @@ type Website struct {
 	Title string
 	Pages []*Document
 	url   string
+	Theme *theme.Theme
+	Cwd   string
 }
 
-func NewWebsite(title string) *Website {
-	return &Website{title, nil, "/index.html"}
+func NewWebsite(title, cwd string) *Website {
+	theme := theme.New(cwd)
+	return &Website{title, nil, "/index.html", theme, cwd}
 }
 
-func (site *Website) URL() string {
+func (site *Website) BaseURL() string {
 	return site.url
 }
 
 // Export generates content
 func Export(title string, cwd string) {
-	site := NewWebsite(title)
-	theme := theme.New(cwd)
-	outputDirectory := path.Join(cwd, "output")
-	pagesDirectory := path.Join(outputDirectory, "pages")
+	site := NewWebsite(title, cwd)
+	theme := site.Theme
+	outputDirectory := filepath.Join(cwd, "output")
+	pagesDirectory := filepath.Join(outputDirectory, "pages")
 	// postsDirectory := path.Join(outputDirectory, "posts")
 
 	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
@@ -39,16 +43,21 @@ func Export(title string, cwd string) {
 	fmt.Println("content folder", contentFolder)
 	site.Pages = GetDocumentsFromDir(contentPagesDirectory)
 	theme.Render("index", outputDirectory, site)
-	for _, page := range site.Pages {
-		if _, err := os.Stat(pagesDirectory); os.IsNotExist(err) {
-			os.Mkdir(pagesDirectory, os.ModePerm)
-		}
-		websiteDocument := NewWebsiteDocument(site, page)
-		theme.Render("document", outputDirectory, websiteDocument)
-	}
+	site.RenderDocumentsToDir(site.Pages, "document", pagesDirectory, "/pages")
 	theme.Copy(outputDirectory)
 }
 
 func (site *Website) String() string {
 	return site.Title
+}
+
+func (site *Website) RenderDocumentsToDir(documents []*Document, templateName, outputDirectory, prefix string) {
+	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
+		os.MkdirAll(outputDirectory, os.ModePerm)
+	}
+	for _, document := range documents {
+		document.JoinPrefixURL(prefix)
+		websiteDocument := NewWebsiteDocument(site, document)
+		site.Theme.Render(templateName, outputDirectory, websiteDocument)
+	}
 }

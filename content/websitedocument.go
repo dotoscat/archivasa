@@ -13,6 +13,6 @@ func NewWebsiteDocument(w *Website, d *Document) *WebsiteDocument {
 	return &WebsiteDocument{*w, *d, content}
 }
 
-func (ws *WebsiteDocument) URL() string {
-	return ws.Url
+func (ws *WebsiteDocument) BaseURL() string {
+	return ws.Document.BaseURL()
 }
