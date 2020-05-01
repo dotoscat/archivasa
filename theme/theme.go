@@ -51,7 +51,7 @@ func (t *Theme) Copy(outputFolder string) {
 
 func (t *Theme) Render(templateName, outputDirectory string, ctx context.Context) {
 	log.Println("Render to", outputDirectory)
-	pageOutputPath := filepath.Join(outputDirectory, ctx.URLName())
+	pageOutputPath := filepath.Join(outputDirectory, ctx.URL())
 	pageOutput, err := os.Create(pageOutputPath)
 	defer pageOutput.Close()
 	if err != nil {

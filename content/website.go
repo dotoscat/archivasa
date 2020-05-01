@@ -3,7 +3,6 @@ package content
 import (
 	"fmt"
 	"os"
-	"path"
 	"path/filepath"
 
 	"github.com/dotoscat/archivasa/theme"
@@ -31,18 +30,19 @@ func Export(title string, cwd string) {
 	site := NewWebsite(title, cwd)
 	theme := site.LoadTheme()
 	outputDirectory := filepath.Join(cwd, "output")
-	pagesDirectory := filepath.Join(outputDirectory, "pages")
+	// pagesDirectory := filepath.Join(outputDirectory, "pages")
 	// postsDirectory := path.Join(outputDirectory, "posts")
 
 	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
 		os.Mkdir(outputDirectory, os.ModePerm)
 	}
-	contentFolder := path.Join(cwd, "content")
-	contentPagesDirectory := path.Join(contentFolder, "pages")
+	contentFolder := filepath.Join(cwd, "content")
+	contentPagesDirectory := filepath.Join(contentFolder, "pages")
 	fmt.Println("content folder", contentFolder)
 	site.Pages = GetDocumentsFromDir(contentPagesDirectory, "/pages", site)
-	// theme.Render("index", outputDirectory, site)
-	site.RenderDocumentsToDir(site.Pages, "document", pagesDirectory, "/pages")
+	index := NewWebpage(site, "/index.html")
+	theme.Render("index", outputDirectory, index)
+	site.RenderDocumentsToDir(site.Pages, "document", outputDirectory)
 	theme.Copy(outputDirectory)
 }
 
@@ -50,17 +50,11 @@ func (site *Website) String() string {
 	return site.Title
 }
 
-func (site *Website) RenderDocumentsToDir(documents []*Document, templateName, outputDirectory, prefix string) {
+func (site *Website) RenderDocumentsToDir(documents []*Document, templateName, outputDirectory string) {
 	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
 		os.MkdirAll(outputDirectory, os.ModePerm)
 	}
-	/*
-		for _, document := range documents {
-
-				document.JoinPrefixURL(prefix)
-				websiteDocument := NewWebsiteDocument(site, document)
-				site.Theme.Render(templateName, outputDirectory, websiteDocument)
-
-		}
-	*/
+	for _, document := range documents {
+		site.Theme.Render(templateName, outputDirectory, document)
+	}
 }

@@ -77,9 +77,9 @@ func GetDocumentsFromDir(dirname, prefix string, website *Website) []*Document {
 			continue
 		}
 		path := filepath.Join(dirname, file.Name())
-		// TODO: change extension
-		// TODO: build URL
+		urlName := strings.Replace(file.Name(), ".md", ".html", -1)
 		documents[i] = NewDocument(website, path, file.Name())
+		documents[i].BuildURL(prefix, urlName)
 	}
 	return documents
 }
