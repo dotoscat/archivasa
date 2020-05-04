@@ -20,20 +20,20 @@ var dash *regexp.Regexp = regexp.MustCompile("-|_")
 type Document struct {
 	Webpage
 	Name     string
-	path     string
+	srcPath  string
 	markdown []byte
 	Content  string
 }
 
-func NewDocument(website *Website, path, base string) *Document {
+func NewDocument(website *Website, srcPath, base string) *Document {
 	name := strings.TrimSuffix(dash.ReplaceAllString(base, " "), filepath.Ext(base))
 	// urlName := strings.TrimSuffix(base, filepath.Ext(base)) + ".html"
 	fmt.Println("name", name)
-	return &Document{Webpage{website, ""}, name, path, nil, ""}
+	return &Document{Webpage{website, ""}, name, srcPath, nil, ""}
 }
 
 func (post *Document) String() string {
-	return post.path
+	return post.srcPath
 }
 
 func (post *Document) Markdown() []byte {
@@ -49,7 +49,8 @@ func (post *Document) BuildContent() bool {
 }
 
 func (post *Document) Read() {
-	file, err := os.Open(post.path)
+	fmt.Println("Open srcPath for reading", post.srcPath)
+	file, err := os.Open(post.srcPath)
 	defer file.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -61,12 +62,13 @@ func (post *Document) Read() {
 	content := string(rawContent)
 	chunks := strings.Split(content, "---")
 	post.markdown = []byte(chunks[1])
-	fmt.Println(post.path)
+	fmt.Println(post.srcPath)
 	fmt.Println(post.markdown)
 
 }
 
 func GetDocumentsFromDir(dirname, prefix string, website *Website) []*Document {
+	fmt.Println("Get documents from:", dirname)
 	files, err := ioutil.ReadDir(dirname)
 	if err != nil {
 		log.Fatalln(err)
@@ -76,9 +78,9 @@ func GetDocumentsFromDir(dirname, prefix string, website *Website) []*Document {
 		if file.IsDir() {
 			continue
 		}
-		path := filepath.Join(dirname, file.Name())
+		srcPath := filepath.Join(dirname, file.Name())
 		urlName := strings.Replace(file.Name(), ".md", ".html", -1)
-		documents[i] = NewDocument(website, path, file.Name())
+		documents[i] = NewDocument(website, srcPath, file.Name())
 		documents[i].BuildURL(prefix, urlName)
 	}
 	return documents
