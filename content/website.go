@@ -30,7 +30,8 @@ func Export(title string, cwd string) {
 	site := NewWebsite(title, cwd)
 	theme := site.LoadTheme()
 	outputDirectory := filepath.Join(cwd, "output")
-	// pagesDirectory := filepath.Join(outputDirectory, "pages")
+	pagesDirectory := filepath.Join(outputDirectory, "pages")
+	MakeOutputdirIfNotExists(pagesDirectory)
 	// postsDirectory := path.Join(outputDirectory, "posts")
 
 	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
@@ -39,10 +40,10 @@ func Export(title string, cwd string) {
 	contentFolder := filepath.Join(cwd, "content")
 	contentPagesDirectory := filepath.Join(contentFolder, "pages")
 	fmt.Println("content folder", contentFolder)
-	site.Pages = GetDocumentsFromDir(contentPagesDirectory, "/pages", site)
-	index := NewWebpage(site, "/index.html")
-	theme.Render("index", outputDirectory, index)
-	site.RenderDocumentsToDir(site.Pages, "document", outputDirectory)
+	site.Pages = GetDocumentsFromDir(contentPagesDirectory, outputDirectory, "/pages", site)
+	index := NewWebpage(site, "/index.html", filepath.Join(outputDirectory, "/index.html"))
+	theme.Render("index", index)
+	site.RenderDocuments(site.Pages, "document")
 	theme.Copy(outputDirectory)
 }
 
@@ -50,11 +51,16 @@ func (site *Website) String() string {
 	return site.Title
 }
 
-func (site *Website) RenderDocumentsToDir(documents []*Document, templateName, outputDirectory string) {
+func (site *Website) RenderDocuments(documents []*Document, templateName string) {
+	for _, document := range documents {
+		document.Read()
+		document.BuildContent()
+		site.Theme.Render(templateName, document)
+	}
+}
+
+func MakeOutputdirIfNotExists(outputDirectory string) {
 	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
 		os.MkdirAll(outputDirectory, os.ModePerm)
-	}
-	for _, document := range documents {
-		site.Theme.Render(templateName, outputDirectory, document)
 	}
 }

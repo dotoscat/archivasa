@@ -4,4 +4,5 @@ package context
 // a document to give its url in any way
 type Context interface {
 	URL() string
+	OutputPath() string
 }

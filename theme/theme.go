@@ -49,10 +49,8 @@ func (t *Theme) Copy(outputFolder string) {
 	copyFolder(CSSFolder, outputFolderCSSFolder)
 }
 
-func (t *Theme) Render(templateName, outputDirectory string, ctx context.Context) {
-	log.Println("Render to", outputDirectory)
-	pageOutputPath := filepath.Join(outputDirectory, ctx.URL())
-	pageOutput, err := os.Create(pageOutputPath)
+func (t *Theme) Render(templateName string, ctx context.Context) {
+	pageOutput, err := os.Create(ctx.OutputPath())
 	defer pageOutput.Close()
 	if err != nil {
 		log.Fatal(err)

@@ -29,7 +29,7 @@ func NewDocument(website *Website, srcPath, base string) *Document {
 	name := strings.TrimSuffix(dash.ReplaceAllString(base, " "), filepath.Ext(base))
 	// urlName := strings.TrimSuffix(base, filepath.Ext(base)) + ".html"
 	fmt.Println("name", name)
-	return &Document{Webpage{website, ""}, name, srcPath, nil, ""}
+	return &Document{Webpage{website, "", ""}, name, srcPath, nil, ""}
 }
 
 func (post *Document) String() string {
@@ -67,7 +67,7 @@ func (post *Document) Read() {
 
 }
 
-func GetDocumentsFromDir(dirname, prefix string, website *Website) []*Document {
+func GetDocumentsFromDir(dirname, outputDir, prefix string, website *Website) []*Document {
 	fmt.Println("Get documents from:", dirname)
 	files, err := ioutil.ReadDir(dirname)
 	if err != nil {
@@ -80,8 +80,10 @@ func GetDocumentsFromDir(dirname, prefix string, website *Website) []*Document {
 		}
 		srcPath := filepath.Join(dirname, file.Name())
 		urlName := strings.Replace(file.Name(), ".md", ".html", -1)
+		outputPath := filepath.Join(outputDir, prefix)
 		documents[i] = NewDocument(website, srcPath, file.Name())
 		documents[i].BuildURL(prefix, urlName)
+		documents[i].BuildOutputPath(outputPath, urlName)
 	}
 	return documents
 }
