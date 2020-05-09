@@ -3,6 +3,7 @@ package content
 import (
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 
 	"github.com/dotoscat/archivasa/theme"
@@ -31,16 +32,21 @@ func Export(title string, cwd string) {
 	theme := site.LoadTheme()
 	outputDirectory := filepath.Join(cwd, "output")
 	pagesDirectory := filepath.Join(outputDirectory, "pages")
+	postsDirectory := path.Join(outputDirectory, "posts")
 	MakeOutputdirIfNotExists(pagesDirectory)
-	// postsDirectory := path.Join(outputDirectory, "posts")
+	MakeOutputdirIfNotExists(postsDirectory)
 
 	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
 		os.Mkdir(outputDirectory, os.ModePerm)
 	}
 	contentFolder := filepath.Join(cwd, "content")
 	contentPagesDirectory := filepath.Join(contentFolder, "pages")
+	contentPostsDirectory := filepath.Join(contentFolder, "posts")
 	fmt.Println("content folder", contentFolder)
 	site.Pages = GetDocumentsFromDir(contentPagesDirectory, outputDirectory, "/pages", site)
+	posts := GetDocumentsFromDir(contentPostsDirectory, outputDirectory, "/posts", site)
+	postsPages := CreatePostspages(posts, 2, site)
+	fmt.Println("postspages", len(postsPages))
 	index := NewWebpage(site, "/index.html", filepath.Join(outputDirectory, "/index.html"))
 	theme.Render("index", index)
 	site.RenderDocuments(site.Pages, "document")
