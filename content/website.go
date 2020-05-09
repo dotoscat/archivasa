@@ -11,14 +11,15 @@ import (
 
 // Website contains data about the site
 type Website struct {
-	Title string
-	Pages []*Document
-	Theme *theme.Theme
-	cwd   string
+	Title      string
+	Pages      []*Document
+	Postspages []*Postspage
+	Theme      *theme.Theme
+	cwd        string
 }
 
 func NewWebsite(title, cwd string) *Website {
-	return &Website{title, nil, nil, cwd}
+	return &Website{title, nil, nil, nil, cwd}
 }
 
 func (site *Website) LoadTheme() *theme.Theme {
@@ -45,10 +46,11 @@ func Export(title string, cwd string) {
 	fmt.Println("content folder", contentFolder)
 	site.Pages = GetDocumentsFromDir(contentPagesDirectory, outputDirectory, "/pages", site)
 	posts := GetDocumentsFromDir(contentPostsDirectory, outputDirectory, "/posts", site)
-	postsPages := CreatePostspages(posts, 2, site)
-	fmt.Println("postspages", len(postsPages))
-	index := NewWebpage(site, "/index.html", filepath.Join(outputDirectory, "/index.html"))
-	theme.Render("index", index)
+	site.Postspages = CreatePostspages(posts, 2, outputDirectory, "/postspage", site)
+	fmt.Println("postspages", len(site.Postspages))
+	//index := NewWebpage(site, "/index.html", filepath.Join(outputDirectory, "/index.html"))
+	//theme.Render("index", index)
+	site.RenderPostspages("document")
 	site.RenderDocuments(site.Pages, "document")
 	theme.Copy(outputDirectory)
 }
@@ -62,6 +64,17 @@ func (site *Website) RenderDocuments(documents []*Document, templateName string)
 		document.Read()
 		document.BuildContent()
 		site.Theme.Render(templateName, document)
+	}
+}
+
+func (site *Website) RenderPostspages(templateName string) {
+	fmt.Println("Postspages: ", len(site.Postspages))
+	for _, page := range site.Postspages {
+		fmt.Println("Posts of page: ", len(page.Posts))
+		for _, webpage := range page.Posts {
+			fmt.Println("Render webpage", webpage)
+			site.Theme.Render(templateName, webpage)
+		}
 	}
 }
 
