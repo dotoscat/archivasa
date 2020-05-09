@@ -26,6 +26,13 @@ func (postspage *Postspage) AddPost(post *Document) bool {
 	return true
 }
 
+func (postspage *Postspage) DistributeDocumets(start, end int, documents []*Document) {
+	chunk := documents[start:end]
+	for _, document := range chunk {
+		postspage.AddPost(document)
+	}
+}
+
 func CreatePostspages(documents []*Document, documentsPerPage int, website *Website) []Postspage {
 	numberOfPages := len(documents) / documentsPerPage
 	documentsLeft := len(documents) % documentsPerPage
@@ -33,20 +40,25 @@ func CreatePostspages(documents []*Document, documentsPerPage int, website *Webs
 		numberOfPages++
 	}
 	pages := make([]Postspage, numberOfPages)
+	iDocuments := 0
 	for i, page := range pages {
 		if i == 0 {
 			page.Init(website, documentsPerPage, nil, &pages[1])
+			page.DistributeDocumets(iDocuments, iDocuments+documentsPerPage, documents)
+			iDocuments += documentsPerPage
 		} else if i == len(pages)-1 {
 			lefts := documentsLeft
 			if documentsLeft == 0 {
 				lefts = documentsPerPage
 			}
 			page.Init(website, lefts, &pages[i-1], nil)
+			page.DistributeDocumets(iDocuments, iDocuments+lefts, documents)
+			iDocuments += lefts
 		} else {
 			page.Init(website, documentsPerPage, &pages[i-1], &pages[i+1])
+			page.DistributeDocumets(iDocuments, iDocuments+documentsPerPage, documents)
+			iDocuments += documentsPerPage
 		}
 	}
 	return pages
 }
-
-// func distributeDocumets
