@@ -46,15 +46,16 @@ func CreatePostspages(documents []*Document, documentsPerPage int, outputDir, pr
 	pages := make([]*Postspage, numberOfPages)
 	iDocuments := 0
 	for i := 0; i < len(pages); i++ {
-		pages[i] = CreatePostspage(website, documentsPerPage)
 		if i == len(pages)-1 {
 			lefts := documentsLeft
 			if documentsLeft == 0 {
 				lefts = documentsPerPage
 			}
+			pages[i] = CreatePostspage(website, lefts)
 			pages[i].DistributeDocumets(iDocuments, iDocuments+lefts, documents)
 			iDocuments += lefts
 		} else {
+			pages[i] = CreatePostspage(website, documentsPerPage)
 			pages[i].DistributeDocumets(iDocuments, iDocuments+documentsPerPage, documents)
 			iDocuments += documentsPerPage
 		}

@@ -67,7 +67,6 @@ func (site *Website) RenderDocuments(documents []*Document, templateName string)
 }
 
 func (site *Website) RenderPostspages(templateName string) {
-	fmt.Println("Postspages: ", len(site.Postspages))
 	for _, page := range site.Postspages {
 		fmt.Println("Prev | next", page, page.Prev, page.Next)
 		site.Theme.Render(templateName, page)
@@ -75,7 +74,6 @@ func (site *Website) RenderPostspages(templateName string) {
 }
 
 func (site *Website) RenderPosts(templateName string) {
-	fmt.Println("Postspages: ", len(site.Postspages))
 	for _, page := range site.Postspages {
 		fmt.Println("Posts of page: ", len(page.Posts))
 		for _, webpage := range page.Posts {
