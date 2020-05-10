@@ -23,12 +23,14 @@ func New(cwd string) *Theme {
 	basicTemplatePath := filepath.Join(templatePath, "basic.tmpl")
 	indexTemplatePath := filepath.Join(templatePath, "index.tmpl")
 	documentTemplatePath := filepath.Join(templatePath, "document.tmpl")
+	postspageTemplatePath := filepath.Join(templatePath, "postspage.tmpl")
 
 	folder := filepath.Join(cwd, "theme")
 
 	templates := map[string]*template.Template{
-		"index":    template.Must(template.ParseFiles(basicTemplatePath, indexTemplatePath)),
-		"document": template.Must(template.ParseFiles(basicTemplatePath, documentTemplatePath)),
+		"index":     template.Must(template.ParseFiles(basicTemplatePath, indexTemplatePath)),
+		"document":  template.Must(template.ParseFiles(basicTemplatePath, documentTemplatePath)),
+		"postspage": template.Must(template.ParseFiles(basicTemplatePath, postspageTemplatePath)),
 	}
 
 	return &Theme{templates, cwd, folder}
