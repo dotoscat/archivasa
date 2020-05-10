@@ -48,8 +48,6 @@ func Export(title string, cwd string) {
 	posts := GetDocumentsFromDir(contentPostsDirectory, outputDirectory, "/posts", site)
 	site.Postspages = CreatePostspages(posts, 2, outputDirectory, "/postspage", site)
 	fmt.Println("postspages", len(site.Postspages))
-	//index := NewWebpage(site, "/index.html", filepath.Join(outputDirectory, "/index.html"))
-	//theme.Render("index", index)
 	site.RenderPostspages("postspage")
 	site.RenderPosts("document")
 	site.RenderDocuments(site.Pages, "document")
@@ -71,6 +69,7 @@ func (site *Website) RenderDocuments(documents []*Document, templateName string)
 func (site *Website) RenderPostspages(templateName string) {
 	fmt.Println("Postspages: ", len(site.Postspages))
 	for _, page := range site.Postspages {
+		fmt.Println("Prev | next", page, page.Prev, page.Next)
 		site.Theme.Render(templateName, page)
 	}
 }
@@ -78,7 +77,6 @@ func (site *Website) RenderPostspages(templateName string) {
 func (site *Website) RenderPosts(templateName string) {
 	fmt.Println("Postspages: ", len(site.Postspages))
 	for _, page := range site.Postspages {
-		// TODO: Render postspages!! Here just renders all the posts
 		fmt.Println("Posts of page: ", len(page.Posts))
 		for _, webpage := range page.Posts {
 			fmt.Println("Render webpage", webpage)

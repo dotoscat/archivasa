@@ -11,23 +11,22 @@ type Postspage struct {
 	Next         *Postspage
 }
 
-func CreatePostspage(website *Website, nPosts int, prev, next *Postspage) *Postspage {
-	return &Postspage{Webpage{website, "", ""}, make([]*Document, nPosts), 0, prev, next}
-}
-
-func (postspage *Postspage) Init(website *Website, nDocuments int, prev, next *Postspage) {
-	*postspage = Postspage{Webpage{website, "", ""}, make([]*Document, nDocuments), 0, prev, next}
+func CreatePostspage(website *Website, nPosts int) *Postspage {
+	return &Postspage{Webpage: Webpage{website, "", ""}, Posts: make([]*Document, nPosts)}
 }
 
 func (postspage *Postspage) AddPost(post *Document) bool {
-	fmt.Println("AddPost -> ", postspage.iCurrentPost, " : ", len(postspage.Posts))
 	if postspage.iCurrentPost >= len(postspage.Posts) {
 		return false
 	}
 	postspage.Posts[postspage.iCurrentPost] = post
 	postspage.iCurrentPost++
-	fmt.Println("posts: ", postspage.Posts)
 	return true
+}
+
+func (postspage *Postspage) LinkPages(prev, next *Postspage) {
+	postspage.Prev = prev
+	postspage.Next = next
 }
 
 func (postspage *Postspage) DistributeDocumets(start, end int, documents []*Document) {
@@ -47,27 +46,16 @@ func CreatePostspages(documents []*Document, documentsPerPage int, outputDir, pr
 	pages := make([]*Postspage, numberOfPages)
 	iDocuments := 0
 	for i := 0; i < len(pages); i++ {
-		if i == 0 {
-			pages[i] = CreatePostspage(website, documentsPerPage, nil, pages[1])
-			page := pages[i]
-			// page.Init(website, documentsPerPage, nil, &pages[1])
-			page.DistributeDocumets(iDocuments, iDocuments+documentsPerPage, documents)
-			iDocuments += documentsPerPage
-		} else if i == len(pages)-1 {
+		pages[i] = CreatePostspage(website, documentsPerPage)
+		if i == len(pages)-1 {
 			lefts := documentsLeft
 			if documentsLeft == 0 {
 				lefts = documentsPerPage
 			}
-			pages[i] = CreatePostspage(website, lefts, pages[i-1], nil)
-			//page.Init(website, lefts, &pages[i-1], nil)
-			page := pages[i]
-			page.DistributeDocumets(iDocuments, iDocuments+lefts, documents)
+			pages[i].DistributeDocumets(iDocuments, iDocuments+lefts, documents)
 			iDocuments += lefts
 		} else {
-			pages[i] = CreatePostspage(website, documentsPerPage, pages[i-1], pages[i+1])
-			// page.Init(website, documentsPerPage, &pages[i-1], &pages[i+1])
-			page := pages[i]
-			page.DistributeDocumets(iDocuments, iDocuments+documentsPerPage, documents)
+			pages[i].DistributeDocumets(iDocuments, iDocuments+documentsPerPage, documents)
 			iDocuments += documentsPerPage
 		}
 		if i == 0 {
@@ -79,6 +67,16 @@ func CreatePostspages(documents []*Document, documentsPerPage int, outputDir, pr
 			pages[i].BuildOutputPath(outputDir, URLName)
 		}
 		fmt.Println("Anyadidos? (again)", pages[i].Posts, ", ", len(pages[i].Posts))
+	}
+	// Link postspages between them
+	for i, page := range pages {
+		if i == 0 {
+			page.LinkPages(nil, pages[1])
+		} else if i == len(pages)-1 {
+			page.LinkPages(pages[i-1], nil)
+		} else {
+			page.LinkPages(pages[i-1], pages[i+1])
+		}
 	}
 	return pages
 }
