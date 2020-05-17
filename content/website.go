@@ -46,7 +46,7 @@ func Export(title string, cwd string) {
 	fmt.Println("content folder", contentFolder)
 	site.Pages = GetDocumentsFromDir(contentPagesDirectory, outputDirectory, "/pages", site)
 	posts := GetDocumentsFromDir(contentPostsDirectory, outputDirectory, "/posts", site)
-	site.Postspages = CreatePostspages(posts, 2, outputDirectory, "/postspage", site)
+	site.Postspages = CreatePostspages(posts, 2, outputDirectory, "/", site)
 	fmt.Println("postspages", len(site.Postspages))
 	site.RenderPostspages("postspage")
 	site.RenderPosts("document")
@@ -78,6 +78,8 @@ func (site *Website) RenderPosts(templateName string) {
 		fmt.Println("Posts of page: ", len(page.Posts))
 		for _, webpage := range page.Posts {
 			fmt.Println("Render webpage", webpage)
+			webpage.Read()
+			webpage.BuildContent()
 			site.Theme.Render(templateName, webpage)
 		}
 	}
