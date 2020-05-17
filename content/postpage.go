@@ -40,12 +40,14 @@ func (postspage *Postspage) DistributeDocumets(start, end int, documents []*Docu
 func CreatePostspages(documents []*Document, documentsPerPage int, outputDir, prefix string, website *Website) []*Postspage {
 	numberOfPages := len(documents) / documentsPerPage
 	documentsLeft := len(documents) % documentsPerPage
+	fmt.Println("documents left", documentsLeft, "number of pages", numberOfPages)
 	if documentsLeft != 0 {
 		numberOfPages++
 	}
+	fmt.Println("(2) documents left", documentsLeft, "number of pages", numberOfPages)
 	pages := make([]*Postspage, numberOfPages)
 	iDocuments := 0
-	for i := 0; i < len(pages); i++ {
+	for i := 0; i < len(pages) && len(pages) > 1; i++ {
 		if i == len(pages)-1 {
 			lefts := documentsLeft
 			if documentsLeft == 0 {
@@ -68,6 +70,13 @@ func CreatePostspages(documents []*Document, documentsPerPage int, outputDir, pr
 			pages[i].BuildOutputPath(outputDir, URLName)
 		}
 		fmt.Println("Anyadidos? (again)", pages[i].Posts, ", ", len(pages[i].Posts))
+	}
+	if len(pages) == 1 {
+		pages[0] = CreatePostspage(website, documentsPerPage)
+		pages[0].DistributeDocumets(0, documentsPerPage, documents)
+		pages[0].BuildURL("", "/index.html")
+		pages[0].BuildOutputPath(outputDir, "/index.html")
+		return pages
 	}
 	// Link postspages between them
 	for i, page := range pages {

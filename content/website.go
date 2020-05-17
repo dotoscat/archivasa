@@ -46,7 +46,7 @@ func Export(title string, cwd string) {
 	fmt.Println("content folder", contentFolder)
 	site.Pages = GetDocumentsFromDir(contentPagesDirectory, outputDirectory, "/pages", site)
 	posts := GetDocumentsFromDir(contentPostsDirectory, outputDirectory, "/posts", site)
-	site.Postspages = CreatePostspages(posts, 2, outputDirectory, "/", site)
+	site.Postspages = CreatePostspages(posts, 5, outputDirectory, "/", site)
 	fmt.Println("postspages", len(site.Postspages))
 	site.RenderPostspages("postspage")
 	site.RenderPosts("document")
