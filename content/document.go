@@ -61,10 +61,12 @@ func (post *Document) Read() {
 	}
 	content := string(rawContent)
 	chunks := strings.Split(content, "---")
+	if len(chunks) < 2 {
+		log.Println(post.srcPath, "has not '---' delimiter")
+		return
+	}
 	post.markdown = []byte(chunks[1])
-	fmt.Println(post.srcPath)
 	fmt.Println(post.markdown)
-
 }
 
 func GetDocumentsFromDir(dirname, outputDir, prefix string, website *Website) []*Document {
