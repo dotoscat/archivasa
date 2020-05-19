@@ -60,7 +60,6 @@ func (site *Website) String() string {
 
 func (site *Website) RenderDocuments(documents []*Document, templateName string) {
 	for _, document := range documents {
-		document.Read()
 		document.BuildContent()
 		site.Theme.Render(templateName, document)
 	}
@@ -78,7 +77,6 @@ func (site *Website) RenderPosts(templateName string) {
 		fmt.Println("Posts of page: ", len(page.Posts))
 		for _, webpage := range page.Posts {
 			fmt.Println("Render webpage", webpage)
-			webpage.Read()
 			webpage.BuildContent()
 			site.Theme.Render(templateName, webpage)
 		}

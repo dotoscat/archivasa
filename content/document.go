@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 
 	"github.com/gomarkdown/markdown"
 )
@@ -23,13 +24,15 @@ type Document struct {
 	srcPath  string
 	markdown []byte
 	Content  string
+	Date     string
+	date     time.Time
 }
 
 func NewDocument(website *Website, srcPath, base string) *Document {
 	name := strings.TrimSuffix(dash.ReplaceAllString(base, " "), filepath.Ext(base))
 	// urlName := strings.TrimSuffix(base, filepath.Ext(base)) + ".html"
 	fmt.Println("name", name)
-	return &Document{Webpage{website, "", ""}, name, srcPath, nil, ""}
+	return &Document{Webpage{website, "", ""}, name, srcPath, nil, "", "", time.Now()}
 }
 
 func (post *Document) String() string {
@@ -46,6 +49,30 @@ func (post *Document) BuildContent() bool {
 	}
 	post.Content = string(markdown.ToHTML(post.markdown, nil, nil))
 	return true
+}
+
+func (post *Document) readDate(date string) {
+	post.Date = date
+	var year int
+	var month time.Month
+	var day int
+	fmt.Sscanf(date, "%d-%d-%d", &year, &month, &day)
+	post.date = time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+}
+
+func (post *Document) readMeta(meta string) {
+	lines := strings.Split(meta, "\n")
+	for _, line := range lines {
+		fields := strings.Split(line, ":")
+		for i, field := range fields {
+			fields[i] = strings.TrimSpace(field)
+		}
+		switch fields[0] {
+		case "date":
+			post.readDate(fields[1])
+		}
+	}
+
 }
 
 func (post *Document) Read() {
@@ -65,6 +92,7 @@ func (post *Document) Read() {
 		log.Println(post.srcPath, "has not '---' delimiter")
 		return
 	}
+	post.readMeta(chunks[0])
 	post.markdown = []byte(chunks[1])
 	fmt.Println(post.markdown)
 }
@@ -86,6 +114,7 @@ func GetDocumentsFromDir(dirname, outputDir, prefix string, website *Website) []
 		documents[i] = NewDocument(website, srcPath, file.Name())
 		documents[i].BuildURL(prefix, urlName)
 		documents[i].BuildOutputPath(outputPath, urlName)
+		documents[i].Read()
 	}
 	return documents
 }
