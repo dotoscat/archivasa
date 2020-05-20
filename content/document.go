@@ -97,13 +97,13 @@ func (post *Document) Read() {
 	fmt.Println(post.markdown)
 }
 
-func GetDocumentsFromDir(dirname, outputDir, prefix string, website *Website) []*Document {
+func GetDocumentsFromDir(dirname, outputDir, prefix string, website *Website) DocumentSlice {
 	fmt.Println("Get documents from:", dirname)
 	files, err := ioutil.ReadDir(dirname)
 	if err != nil {
 		log.Fatalln(err)
 	}
-	documents := make([]*Document, len(files))
+	documents := make(DocumentSlice, len(files))
 	for i, file := range files {
 		if file.IsDir() {
 			continue
@@ -117,4 +117,25 @@ func GetDocumentsFromDir(dirname, outputDir, prefix string, website *Website) []
 		documents[i].Read()
 	}
 	return documents
+}
+
+type DocumentSlice []*Document
+
+func (d DocumentSlice) Len() int {
+	return len(d)
+}
+
+func (d DocumentSlice) Less(i, j int) bool {
+	return d[i].date.After(d[j].date)
+}
+
+func (d DocumentSlice) Swap(i, j int) {
+	d[i], d[j] = d[j], d[i]
+}
+
+func (d DocumentSlice) String() (output string) {
+	for i, document := range d {
+		output += fmt.Sprintln(i, document.date)
+	}
+	return
 }

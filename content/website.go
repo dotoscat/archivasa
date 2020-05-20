@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 
 	"github.com/dotoscat/archivasa/theme"
 )
@@ -46,6 +47,9 @@ func Export(title string, cwd string) {
 	fmt.Println("content folder", contentFolder)
 	site.Pages = GetDocumentsFromDir(contentPagesDirectory, outputDirectory, "/pages", site)
 	posts := GetDocumentsFromDir(contentPostsDirectory, outputDirectory, "/posts", site)
+	sort.Sort(posts)
+	fmt.Println("posts:")
+	fmt.Println(posts)
 	site.Postspages = CreatePostspages(posts, 5, outputDirectory, "/", site)
 	fmt.Println("postspages", len(site.Postspages))
 	site.RenderPostspages("postspage")
