@@ -1,3 +1,21 @@
+/*
+archivasa - a static web generator, and only that
+Copyright (C) 2020 Oscar Triano García
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as
+published by the Free Software Foundation, either version 3 of the
+License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
 package theme
 
 import (
@@ -12,11 +30,13 @@ import (
 	"github.com/dotoscat/archivasa/context"
 )
 
+// Theme is a collection of templates and other resources from the cwd
 type Theme struct {
 	templates   map[string]*template.Template
 	cwd, folder string
 }
 
+// New create a new theme from the folder "theme"
 func New(cwd string) *Theme {
 	themePath := filepath.Join(cwd, "theme")
 	templatePath := filepath.Join(themePath, "templates")
@@ -36,14 +56,7 @@ func New(cwd string) *Theme {
 	return &Theme{templates, cwd, folder}
 }
 
-func (t *Theme) Index() *template.Template {
-	return t.templates["index"]
-}
-
-func (t *Theme) Document() *template.Template {
-	return t.templates["document"]
-}
-
+// Copy copy the resources from the source to the output folder
 func (t *Theme) Copy(outputFolder string) {
 	CSSFolder := filepath.Join(t.folder, "css")
 	outputFolderCSSFolder := filepath.Join(outputFolder, "css")
@@ -51,6 +64,7 @@ func (t *Theme) Copy(outputFolder string) {
 	copyFolder(CSSFolder, outputFolderCSSFolder)
 }
 
+// Render renders a context from a template
 func (t *Theme) Render(templateName string, ctx context.Context) {
 	pageOutput, err := os.Create(ctx.OutputPath())
 	defer pageOutput.Close()
