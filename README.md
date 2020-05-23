@@ -27,3 +27,9 @@ Starts at the first file and ends with '---'
     # Hello world
 
     World world
+
+## TODO
+
+[ ] Add license
+[ ] Rearrange the source code
+[ ] A configuration system
