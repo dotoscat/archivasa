@@ -32,6 +32,9 @@ func main() {
 	if error != nil {
 		log.Fatal(error)
 	}
+	config := ReadConfigFile(cwd)
+	os.Exit(0)
+	fmt.Println(config)
 	fmt.Println("Current working directory", cwd)
 	content.Export("testing", cwd)
 }
