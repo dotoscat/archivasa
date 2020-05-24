@@ -24,6 +24,7 @@ import (
 	"os"
 
 	"github.com/dotoscat/archivasa/content"
+	"github.com/dotoscat/archivasa/theme"
 )
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
 		log.Fatal(error)
 	}
 	config := ReadConfigFile(cwd)
+	theme := theme.LoadTheme(cwd)
 	fmt.Println(config.Title)
 	fmt.Println(config.PostsPerPage)
 	os.Exit(0)

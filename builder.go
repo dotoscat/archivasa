@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/dotoscat/archivasa/theme"
 	"github.com/dotoscat/archivasa/util"
 )
 
@@ -39,4 +40,8 @@ func ReadConfigFile(cwd string) Config {
 	ppp, _ := pairs.GetInt("postsperpage")
 	config.PostsPerPage = ppp
 	return config
+}
+
+func BuildSite(config Config, theme *theme.Theme) {
+
 }
