@@ -1,13 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
+
+	"github.com/dotoscat/archivasa/util"
 )
 
 const configNotFound = `
@@ -34,21 +33,10 @@ func ReadConfigFile(cwd string) Config {
 	if err != nil {
 		log.Fatalln("Error opening config file: ", err)
 	}
-	lines := strings.Split(string(configFile), "\n")
-	for _, row := range lines {
-		fieldValue := strings.Split(row, "=")
-		field := strings.TrimSpace(fieldValue[0])
-		value := strings.TrimSpace(fieldValue[1])
-		switch field {
-		case "title":
-			config.Title = value
-		case "postsperpage":
-			intValue, err := strconv.ParseInt(value, 10, 32)
-			if err != nil {
-				fmt.Println("Error with", field, ":", value, " cannot be converted to int")
-			}
-			config.PostsPerPage = int(intValue)
-		}
-	}
+	pairs := util.ReadConfigFromString(string(configFile))
+	title, _ := pairs.GetString("title")
+	config.Title = title
+	ppp, _ := pairs.GetInt("postsperpage")
+	config.PostsPerPage = ppp
 	return config
 }
