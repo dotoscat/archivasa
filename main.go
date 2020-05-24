@@ -33,8 +33,9 @@ func main() {
 		log.Fatal(error)
 	}
 	config := ReadConfigFile(cwd)
+	fmt.Println(config.Title)
+	fmt.Println(config.PostsPerPage)
 	os.Exit(0)
-	fmt.Println(config)
 	fmt.Println("Current working directory", cwd)
 	content.Export("testing", cwd)
 }
