@@ -1,13 +1,13 @@
 # archivasa
 
-A simple static blog generator written in GO.
+A simple static blog generator written in GO, straight to the point, minimal configuration
 
 ## Features
 
 * Post, pages in Markdown
 * Works in the current working directory
 * Can use themes
-* Support for markdown files and html files
+* Support for markdown files
 * Output folder
 * Custom frontmatter
 

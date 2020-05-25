@@ -37,7 +37,7 @@ type Theme struct {
 }
 
 // New create a new theme from the folder "theme"
-func LoadTheme(cwd string) *Theme {
+func Load(cwd string) *Theme {
 	themePath := filepath.Join(cwd, "theme")
 	templatePath := filepath.Join(themePath, "templates")
 	basicTemplatePath := filepath.Join(templatePath, "basic.tmpl")

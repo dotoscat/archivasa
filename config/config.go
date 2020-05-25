@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"io/ioutil"
@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/dotoscat/archivasa/theme"
 	"github.com/dotoscat/archivasa/util"
 )
 
@@ -24,7 +23,7 @@ type Config struct {
 }
 
 // ReadConfigFile reads a config file from the current working directory
-func ReadConfigFile(cwd string) Config {
+func Read(cwd string) Config {
 	config := Config{}
 	configPath := filepath.Join(cwd, "config.txt")
 	if _, err := os.Stat(configPath); os.IsNotExist(err) {
@@ -40,8 +39,4 @@ func ReadConfigFile(cwd string) Config {
 	ppp, _ := pairs.GetInt("postsperpage")
 	config.PostsPerPage = ppp
 	return config
-}
-
-func BuildSite(config Config, theme *theme.Theme) {
-
 }

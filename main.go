@@ -23,7 +23,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dotoscat/archivasa/builder"
+	"github.com/dotoscat/archivasa/config"
 	"github.com/dotoscat/archivasa/content"
 	"github.com/dotoscat/archivasa/theme"
 )
@@ -33,13 +33,14 @@ func main() {
 	if error != nil {
 		log.Fatal(error)
 	}
-	config := builder.ReadConfigFile(cwd)
-	theme := theme.LoadTheme(cwd)
+	config := config.Read(cwd)
+	theme := theme.Load(cwd)
 	content := content.Read(cwd)
 	fmt.Println(theme)
 	fmt.Println(config.Title)
 	fmt.Println(config.PostsPerPage)
-	fmt.Println(content)
+	fmt.Println(content.Pages)
+	fmt.Println(content.Posts)
 	os.Exit(0)
 	fmt.Println("Current working directory", cwd)
 	//content.Export("testing", cwd)
