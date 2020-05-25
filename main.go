@@ -23,21 +23,24 @@ import (
 	"log"
 	"os"
 
+	"github.com/dotoscat/archivasa/builder"
 	"github.com/dotoscat/archivasa/content"
 	"github.com/dotoscat/archivasa/theme"
 )
 
 func main() {
-	fmt.Println("Hola mundo")
 	cwd, error := os.Getwd()
 	if error != nil {
 		log.Fatal(error)
 	}
-	config := ReadConfigFile(cwd)
+	config := builder.ReadConfigFile(cwd)
 	theme := theme.LoadTheme(cwd)
+	content := content.Read(cwd)
+	fmt.Println(theme)
 	fmt.Println(config.Title)
 	fmt.Println(config.PostsPerPage)
+	fmt.Println(content)
 	os.Exit(0)
 	fmt.Println("Current working directory", cwd)
-	content.Export("testing", cwd)
+	//content.Export("testing", cwd)
 }
