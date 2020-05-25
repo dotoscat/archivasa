@@ -17,7 +17,7 @@ type Document struct {
 }
 
 func (d *Document) String() string {
-	output := fmt.Sprintf("%v\t%v\t%v\t%v", d.Date, d.Tags, d.position, d.Path)
+	output := fmt.Sprintf("\n%v\n===\n%v\n%v\n%v\n%v\n", d.Path, d.Date, d.Tags, d.position, d.Path)
 	return output
 }
 
@@ -70,3 +70,15 @@ func getDate(date string) time.Time {
 }
 
 type Documents []*Document
+
+func (d Documents) Len() int {
+	return len(d)
+}
+
+func (d Documents) Less(i, j int) bool {
+	return d[i].Date.After(d[j].Date)
+}
+
+func (d Documents) Swap(i, j int) {
+	d[i], d[j] = d[j], d[i]
+}

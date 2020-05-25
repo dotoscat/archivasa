@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"log"
 	"path/filepath"
+	"sort"
 )
 
 type Content struct {
@@ -13,7 +14,10 @@ type Content struct {
 
 func Read(cwd string) Content {
 	pagesPath := filepath.Join(cwd, "content", "pages")
-	return Content{Pages: readDir(pagesPath)}
+	postsPath := filepath.Join(cwd, "content", "posts")
+	posts := readDir(postsPath)
+	sort.Sort(posts)
+	return Content{Pages: readDir(pagesPath), Posts: posts}
 }
 
 func readDir(dir string) Documents {
