@@ -20,6 +20,7 @@ const configNotFound = `
 type Config struct {
 	Title        string
 	PostsPerPage int
+	Cwd          string
 }
 
 // ReadConfigFile reads a config file from the current working directory
@@ -38,5 +39,6 @@ func Read(cwd string) Config {
 	config.Title = title
 	ppp, _ := pairs.GetInt("postsperpage")
 	config.PostsPerPage = ppp
+	config.Cwd = cwd
 	return config
 }
