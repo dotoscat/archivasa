@@ -10,14 +10,13 @@ import (
 )
 
 type Document struct {
-	Date     time.Time
-	Tags     []string
-	position int64
-	Path     string
+	Date time.Time
+	Tags []string
+	Path string
 }
 
 func (d *Document) String() string {
-	output := fmt.Sprintf("\n%v\n===\n%v\n%v\n%v\n%v\n", d.Path, d.Date, d.Tags, d.position, d.Path)
+	output := fmt.Sprintf("\n%v\n===\n%v\n%v\n%v\n", d.Path, d.Date, d.Tags)
 	return output
 }
 
@@ -48,8 +47,6 @@ func NewDocument(path string) *Document {
 			document.Tags = getTags(value)
 		}
 	}
-	position, err := file.Seek(0, os.SEEK_CUR)
-	document.position = position
 	return &document
 }
 
