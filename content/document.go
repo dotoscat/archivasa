@@ -16,7 +16,7 @@ type Document struct {
 }
 
 func (d *Document) String() string {
-	output := fmt.Sprintf("\n%v\n===\n%v\n%v\n%v\n", d.Path, d.Date, d.Tags)
+	output := fmt.Sprintf("\n%v\n===\n%v\n%v\n", d.Path, d.Date, d.Tags)
 	return output
 }
 
