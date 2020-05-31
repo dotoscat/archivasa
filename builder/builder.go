@@ -15,10 +15,12 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	postsPath := filepath.Join(config.Cwd, "posts")
 	MakeOutputdirIfNotExists(pagesPath)
 	MakeOutputdirIfNotExists(postsPath)
+	fmt.Println("nPostspages", len(content.Posts), config.PostsPerPage)
 	nPostspages := len(content.Posts) / config.PostsPerPage
-	if len(content.Posts)%len(content.Posts) != 0 {
+	if len(content.Posts)%config.PostsPerPage != 0 {
 		nPostspages++
 	}
+	fmt.Println("nPostspages(2)", nPostspages)
 	website := NewWebsite(config.Title, len(content.Pages), nPostspages)
 	// Build pages
 	for i := 0; i < len(website.Pages); i++ {
@@ -31,7 +33,9 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	}
 	fmt.Println(posts)
 	FillPostspages(website, posts, config.PostsPerPage)
-	fmt.Println(website.Postspages)
+	//fmt.Println(website.Postspages)
+	//fmt.Println(website.Postspages[0].Posts)
+	//fmt.Println(config)
 	// Build posts
 	// Buils postspages
 	// Render posts

@@ -34,25 +34,43 @@ type Postspage struct {
 func FillPostspages(website *Website, posts []*Document, postsPerPage int) {
 	postsLeft := len(posts) % postsPerPage
 	if len(website.Postspages) == 1 {
-		website.Postspages[0] = CreatePostspage(website, posts, "index.html")
+		website.Postspages[0] = CreatePostspage(website, posts, "/index.html")
+		return
 	}
 	iPost := 0
+	fmt.Println("fill, posts per page", postsPerPage)
+	fmt.Println("posts left", postsLeft)
 	for i := 0; i < len(website.Postspages) && len(website.Postspages) > 1; i++ {
 		var URL string
 		if i == 0 {
-			URL = fmt.Sprintf("index.html")
+			URL = "/index.html"
 		} else {
-			URL = fmt.Sprintf("page%v.html", i)
+			URL = fmt.Sprintf("/page%v.html", i)
 		}
 		var postsChunk []*Document
-		if i == len(posts)-1 && postsLeft != 0 {
+		fmt.Println("i: ", i, len(website.Postspages)-1)
+		if i == len(website.Postspages)-1 && postsLeft != 0 {
 			postsChunk = posts[iPost : iPost+postsLeft]
 		} else {
+			fmt.Println("deb, ", iPost, iPost+postsPerPage, len(posts))
 			postsChunk = posts[iPost : iPost+postsPerPage]
 			iPost += postsPerPage
 		}
 		website.Postspages[i] = CreatePostspage(website, postsChunk, URL)
 	}
+	// Link postspages between them
+	fmt.Println("Link pages")
+	pages := website.Postspages
+	for i, page := range pages {
+		if i == 0 {
+			page.LinkPages(nil, pages[1])
+		} else if i == len(pages)-1 {
+			page.LinkPages(pages[i-1], nil)
+		} else {
+			page.LinkPages(pages[i-1], pages[i+1])
+		}
+	}
+	fmt.Println("End link pages")
 }
 
 func CreatePostspage(website *Website, posts []*Document, URL string) *Postspage {
@@ -73,11 +91,16 @@ func (postspage *Postspage) AddPost(post *Document) bool {
 	return true
 }
 
-/*
 func (postspage *Postspage) LinkPages(prev, next *Postspage) {
 	postspage.Prev = prev
 	postspage.Next = next
 }
+
+func (postspage *Postspage) String() string {
+	return fmt.Sprintf("page: %v\nNext: %v\nPrev: %v\n", postspage.URL, postspage.Next, postspage.Prev)
+}
+
+/*
 
 func (postspage *Postspage) DistributeDocuments(start, end int, documents []*Document) {
 	chunk := documents[start:end]
