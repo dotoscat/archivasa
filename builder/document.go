@@ -48,10 +48,11 @@ func NewDocument(website *Website, contentDocument *content.Document, prefix str
 		log.Fatalln("error: ", contentDocument, " ; ", err)
 	}
 	baseName := filepath.Base(contentDocument.Path)
-	URLBaseName := strings.TrimSuffix(baseName, ".md")
+	URLBaseName := strings.TrimSuffix(baseName, ".md") + ".html"
 	URL := filepath.Join("/", prefix, URLBaseName)
 	name := strings.TrimSuffix(dash.ReplaceAllString(baseName, " "), ".md")
-	dateString := contentDocument.Date.Format("%Y-%m-%d")
+	date := contentDocument.Date
+	dateString := fmt.Sprintf("%d-%d-%d", date.Year(), date.Month(), date.Day())
 	contentString := string(rawContent)
 	chunks := strings.Split(contentString, "---")
 	if len(chunks) < 2 {
@@ -64,7 +65,7 @@ func NewDocument(website *Website, contentDocument *content.Document, prefix str
 }
 
 func (d *Document) String() string {
-	return fmt.Sprintf("%v (%v)\n===\n", d.Name, d.URL)
+	return fmt.Sprintf("%v\n===\n%v\n%v\n", d.Name, d.URL, d.Date)
 }
 
 /*
