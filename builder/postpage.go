@@ -18,8 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package builder
 
-import "fmt"
-
 // Postpages are generated from Webpages (or documents)
 type Postspage struct {
 	Webpage
@@ -29,6 +27,7 @@ type Postspage struct {
 	Next         *Postspage
 }
 
+/*
 func CreatePostspage(website *Website, nPosts int) *Postspage {
 	return &Postspage{Webpage: Webpage{website, "", ""}, Posts: make([]*Document, nPosts)}
 }
@@ -47,7 +46,7 @@ func (postspage *Postspage) LinkPages(prev, next *Postspage) {
 	postspage.Next = next
 }
 
-func (postspage *Postspage) DistributeDocumets(start, end int, documents []*Document) {
+func (postspage *Postspage) DistributeDocuments(start, end int, documents []*Document) {
 	chunk := documents[start:end]
 	for _, document := range chunk {
 		postspage.AddPost(document)
@@ -108,3 +107,4 @@ func CreatePostspages(documents []*Document, documentsPerPage int, outputDir, pr
 	}
 	return pages
 }
+*/

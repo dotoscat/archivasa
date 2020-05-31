@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package builder
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"path/filepath"
@@ -41,14 +42,14 @@ type Document struct {
 	Date    string
 }
 
-func NewDocument(website *Website, contentDocument content.Document, prefix string) *Document {
+func NewDocument(website *Website, contentDocument *content.Document, prefix string) *Document {
 	rawContent, err := ioutil.ReadFile(contentDocument.Path)
 	if err != nil {
 		log.Fatalln("error: ", contentDocument, " ; ", err)
 	}
 	baseName := filepath.Base(contentDocument.Path)
 	URLBaseName := strings.TrimSuffix(baseName, ".md")
-	URL := filepath.Join(prefix, URLBaseName)
+	URL := filepath.Join("/", prefix, URLBaseName)
 	name := strings.TrimSuffix(dash.ReplaceAllString(baseName, " "), ".md")
 	dateString := contentDocument.Date.Format("%Y-%m-%d")
 	contentString := string(rawContent)
@@ -60,6 +61,10 @@ func NewDocument(website *Website, contentDocument content.Document, prefix stri
 	content := string(markdown.ToHTML([]byte(markdownChunk), nil, nil))
 	document := Document{Webpage{website, URL}, name, content, dateString}
 	return &document
+}
+
+func (d *Document) String() string {
+	return fmt.Sprintf("%v (%v)\n===\n", d.Name, d.URL)
 }
 
 /*

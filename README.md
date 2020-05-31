@@ -30,7 +30,7 @@ Starts at the first file and ends with '---'
 
 ## TODO
 
-[ ] Add something to read config files
+[x] Add something to read config files
 [ ] Add a builder
 [x] Add license
 [ ] Rearrange the source code

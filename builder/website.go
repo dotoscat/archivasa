@@ -18,14 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package builder
 
-import (
-	"fmt"
-	"os"
-	"path"
-	"path/filepath"
-	"sort"
-)
-
 // Website contains data about the site
 type Website struct {
 	Title      string
@@ -33,6 +25,11 @@ type Website struct {
 	Postspages []*Postspage
 }
 
+func NewWebsite(title string, nPages, nPostspages int) *Website {
+	return &Website{title, make([]*Document, nPages), make([]*Postspage, nPostspages)}
+}
+
+/*
 // Export generates content
 func Export(title string, cwd string) {
 	site := new(Website)
@@ -90,9 +87,4 @@ func (site *Website) RenderPosts(templateName string) {
 		}
 	}
 }
-
-func MakeOutputdirIfNotExists(outputDirectory string) {
-	if _, err := os.Stat(outputDirectory); os.IsNotExist(err) {
-		os.MkdirAll(outputDirectory, os.ModePerm)
-	}
-}
+*/
