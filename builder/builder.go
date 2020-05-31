@@ -30,6 +30,8 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 		posts[i] = NewDocument(website, content.Posts[i], "posts")
 	}
 	fmt.Println(posts)
+	FillPostspages(website, posts, config.PostsPerPage)
+	fmt.Println(website.Postspages)
 	// Build posts
 	// Buils postspages
 	// Render posts

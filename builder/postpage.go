@@ -18,6 +18,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package builder
 
+import (
+	"fmt"
+)
+
 // Postpages are generated from Webpages (or documents)
 type Postspage struct {
 	Webpage
@@ -27,9 +31,37 @@ type Postspage struct {
 	Next         *Postspage
 }
 
-/*
-func CreatePostspage(website *Website, nPosts int) *Postspage {
-	return &Postspage{Webpage: Webpage{website, "", ""}, Posts: make([]*Document, nPosts)}
+func FillPostspages(website *Website, posts []*Document, postsPerPage int) {
+	postsLeft := len(posts) % postsPerPage
+	if len(website.Postspages) == 1 {
+		website.Postspages[0] = CreatePostspage(website, posts, "index.html")
+	}
+	iPost := 0
+	for i := 0; i < len(website.Postspages) && len(website.Postspages) > 1; i++ {
+		var URL string
+		if i == 0 {
+			URL = fmt.Sprintf("index.html")
+		} else {
+			URL = fmt.Sprintf("page%v.html", i)
+		}
+		var postsChunk []*Document
+		if i == len(posts)-1 && postsLeft != 0 {
+			postsChunk = posts[iPost : iPost+postsLeft]
+		} else {
+			postsChunk = posts[iPost : iPost+postsPerPage]
+			iPost += postsPerPage
+		}
+		website.Postspages[i] = CreatePostspage(website, postsChunk, URL)
+	}
+}
+
+func CreatePostspage(website *Website, posts []*Document, URL string) *Postspage {
+	nPosts := len(posts)
+	postspage := Postspage{Webpage: Webpage{website, URL}, Posts: make([]*Document, nPosts)}
+	for _, post := range posts {
+		postspage.AddPost(post)
+	}
+	return &postspage
 }
 
 func (postspage *Postspage) AddPost(post *Document) bool {
@@ -41,6 +73,7 @@ func (postspage *Postspage) AddPost(post *Document) bool {
 	return true
 }
 
+/*
 func (postspage *Postspage) LinkPages(prev, next *Postspage) {
 	postspage.Prev = prev
 	postspage.Next = next
