@@ -25,6 +25,14 @@ type Webpage struct {
 	URL string
 }
 
+type Urler interface {
+	Url() string
+}
+
 func NewWebpage(site *Website, url string) *Webpage {
 	return &Webpage{site, url}
+}
+
+func (w *Webpage) Url() string {
+	return w.URL
 }

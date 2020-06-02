@@ -2,8 +2,10 @@ package builder
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
+	"text/template"
 
 	"github.com/dotoscat/archivasa/config"
 	"github.com/dotoscat/archivasa/content"
@@ -11,8 +13,9 @@ import (
 )
 
 func Run(config config.Config, content *content.Content, theme *theme.Theme) {
-	pagesPath := filepath.Join(config.Cwd, "pages")
-	postsPath := filepath.Join(config.Cwd, "posts")
+	outputPath := filepath.Join(config.Cwd, "output")
+	pagesPath := filepath.Join(config.Cwd, "output", "pages")
+	postsPath := filepath.Join(config.Cwd, "output", "posts")
 	MakeOutputdirIfNotExists(pagesPath)
 	MakeOutputdirIfNotExists(postsPath)
 	fmt.Println("nPostspages", len(content.Posts), config.PostsPerPage)
@@ -33,6 +36,13 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	}
 	fmt.Println(posts)
 	FillPostspages(website, posts, config.PostsPerPage)
+	documentTemplate, ok := theme.Templates["document"]
+	if !ok {
+		log.Fatalln(documentTemplate, " do not exists")
+	}
+	for _, page := range website.Pages {
+		Render(documentTemplate, page, outputPath)
+	}
 	//fmt.Println(website.Postspages)
 	//fmt.Println(website.Postspages[0].Posts)
 	//fmt.Println(config)
@@ -41,6 +51,21 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	// Render posts
 	// Render postspages
 
+}
+
+func Render(template *template.Template, webpage Urler, outputDirectory string) {
+	outputPath := filepath.Join(outputDirectory, webpage.Url())
+	file, err := os.Create(outputPath)
+	defer file.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+	if template == nil {
+		log.Fatalf("%v template is nil", template)
+	}
+	if err := template.Execute(file, webpage); err != nil {
+		log.Fatal(err)
+	}
 }
 
 func MakeOutputdirIfNotExists(outputDirectory string) {

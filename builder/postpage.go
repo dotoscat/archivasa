@@ -52,7 +52,6 @@ func FillPostspages(website *Website, posts []*Document, postsPerPage int) {
 		if i == len(website.Postspages)-1 && postsLeft != 0 {
 			postsChunk = posts[iPost : iPost+postsLeft]
 		} else {
-			fmt.Println("deb, ", iPost, iPost+postsPerPage, len(posts))
 			postsChunk = posts[iPost : iPost+postsPerPage]
 			iPost += postsPerPage
 		}
