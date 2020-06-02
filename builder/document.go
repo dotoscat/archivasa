@@ -49,7 +49,7 @@ func NewDocument(website *Website, contentDocument *content.Document, prefix str
 	}
 	baseName := filepath.Base(contentDocument.Path)
 	URLBaseName := strings.TrimSuffix(baseName, ".md") + ".html"
-	URL := filepath.Join("/", prefix, URLBaseName)
+	URL := fmt.Sprintf("/%v/%v", prefix, URLBaseName)
 	name := strings.TrimSuffix(dash.ReplaceAllString(baseName, " "), ".md")
 	date := contentDocument.Date
 	dateString := fmt.Sprintf("%d-%d-%d", date.Year(), date.Month(), date.Day())
