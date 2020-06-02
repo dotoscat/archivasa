@@ -32,7 +32,7 @@ import (
 
 // Theme is a collection of templates and other resources from the cwd
 type Theme struct {
-	Templates   map[string]*template.Template
+	templates   map[string]*template.Template
 	cwd, folder string
 }
 
@@ -50,6 +50,14 @@ func Load(cwd string) *Theme {
 	}
 
 	return &Theme{templates, cwd, themePath}
+}
+
+func (t *Theme) Templates(name string) *template.Template {
+	documentTemplate, ok := t.templates[name]
+	if !ok {
+		log.Fatalln(name, " does not exists.")
+	}
+	return documentTemplate
 }
 
 func (t *Theme) Folder() string {
@@ -71,7 +79,7 @@ func (t *Theme) Render(templateName string, ctx context.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	template := t.Templates[templateName]
+	template := t.Templates(templateName)
 	if template == nil {
 		log.Fatalf("%v template is nil", templateName)
 	}
