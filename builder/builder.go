@@ -16,6 +16,7 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	outputPath := filepath.Join(config.Cwd, "output")
 	pagesPath := filepath.Join(config.Cwd, "output", "pages")
 	postsPath := filepath.Join(config.Cwd, "output", "posts")
+	MakeOutputdirIfNotExists(outputPath)
 	MakeOutputdirIfNotExists(pagesPath)
 	MakeOutputdirIfNotExists(postsPath)
 	fmt.Println("nPostspages", len(content.Posts), config.PostsPerPage)
@@ -44,14 +45,9 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	for _, postsPage := range website.Postspages {
 		Render(postspageTemplate, postsPage, outputPath)
 	}
-	//fmt.Println(website.Postspages)
-	//fmt.Println(website.Postspages[0].Posts)
-	//fmt.Println(config)
-	// Build posts
-	// Buils postspages
-	// Render posts
-	// Render postspages
-
+	for _, post := range posts {
+		Render(documentTemplate, post, outputPath)
+	}
 }
 
 func Render(template *template.Template, webpage Urler, outputDirectory string) {
