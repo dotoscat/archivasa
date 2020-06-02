@@ -36,12 +36,13 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	}
 	fmt.Println(posts)
 	FillPostspages(website, posts, config.PostsPerPage)
-	documentTemplate, ok := theme.Templates["document"]
-	if !ok {
-		log.Fatalln(documentTemplate, " do not exists")
-	}
+	documentTemplate := theme.Templates("document")
+	postspageTemplate := theme.Templates("postspage")
 	for _, page := range website.Pages {
 		Render(documentTemplate, page, outputPath)
+	}
+	for _, postsPage := range website.Postspages {
+		Render(postspageTemplate, postsPage, outputPath)
 	}
 	//fmt.Println(website.Postspages)
 	//fmt.Println(website.Postspages[0].Posts)
