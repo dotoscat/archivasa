@@ -26,14 +26,12 @@ import (
 	"os"
 	"path/filepath"
 	"text/template"
-
-	"github.com/dotoscat/archivasa/context"
 )
 
 // Theme is a collection of templates and other resources from the cwd
 type Theme struct {
-	templates   map[string]*template.Template
-	cwd, folder string
+	templates map[string]*template.Template
+	folder    string
 }
 
 // New create a new theme from the folder "theme"
@@ -49,7 +47,7 @@ func Load(cwd string) *Theme {
 		"postspage": template.Must(template.ParseFiles(basicTemplatePath, postspageTemplatePath)),
 	}
 
-	return &Theme{templates, cwd, themePath}
+	return &Theme{templates, themePath}
 }
 
 func (t *Theme) Templates(name string) *template.Template {
@@ -60,32 +58,12 @@ func (t *Theme) Templates(name string) *template.Template {
 	return documentTemplate
 }
 
-func (t *Theme) Folder() string {
-	return t.cwd
-}
-
 // Copy copy the resources from the source to the output folder
 func (t *Theme) Copy(outputFolder string) {
 	CSSFolder := filepath.Join(t.folder, "css")
 	outputFolderCSSFolder := filepath.Join(outputFolder, "css")
 	fmt.Println(CSSFolder, outputFolderCSSFolder)
 	copyFolder(CSSFolder, outputFolderCSSFolder)
-}
-
-// Render renders a context from a template
-func (t *Theme) Render(templateName string, ctx context.Context) {
-	pageOutput, err := os.Create(ctx.OutputPath())
-	defer pageOutput.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-	template := t.Templates(templateName)
-	if template == nil {
-		log.Fatalf("%v template is nil", templateName)
-	}
-	if err := template.Execute(pageOutput, ctx); err != nil {
-		log.Fatal(err)
-	}
 }
 
 func copyFolder(src, dst string) {
