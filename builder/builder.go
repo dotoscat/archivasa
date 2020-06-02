@@ -48,6 +48,7 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	for _, post := range posts {
 		Render(documentTemplate, post, outputPath)
 	}
+	theme.Copy(outputPath)
 }
 
 func Render(template *template.Template, webpage Urler, outputDirectory string) {
