@@ -23,7 +23,6 @@ This is a command line interface. In your current working directory you need the
         * templates
             * basic.tmpl
             * document.tmpl
-            * index.tmpl
             * postspage.tmpl
     * content
         * pages
