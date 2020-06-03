@@ -18,13 +18,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 package builder
 
-import (
-	"log"
-	"os"
-	"path/filepath"
-	"text/template"
-)
-
 // Webpage represents a internet document with its URL
 // A webpage belongs to a website
 type Webpage struct {
@@ -32,21 +25,14 @@ type Webpage struct {
 	URL string
 }
 
+type Urler interface {
+	Url() string
+}
+
 func NewWebpage(site *Website, url string) *Webpage {
 	return &Webpage{site, url}
 }
 
-func (w *Webpage) Render(template *template.Template, outputDirectory string) {
-	outputPath := filepath.Join(outputDirectory, w.URL)
-	file, err := os.Create(outputPath)
-	defer file.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-	if template == nil {
-		log.Fatalf("%v template is nil", template)
-	}
-	if err := template.Execute(file, w); err != nil {
-		log.Fatal(err)
-	}
+func (w *Webpage) Url() string {
+	return w.URL
 }
