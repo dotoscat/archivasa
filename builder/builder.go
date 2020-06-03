@@ -20,10 +20,8 @@ package builder
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
-	"text/template"
 
 	"github.com/dotoscat/archivasa/config"
 	"github.com/dotoscat/archivasa/content"
@@ -58,30 +56,15 @@ func Run(config config.Config, content *content.Content, theme *theme.Theme) {
 	documentTemplate := theme.Templates("document")
 	postspageTemplate := theme.Templates("postspage")
 	for _, page := range website.Pages {
-		Render(documentTemplate, page, outputPath)
+		page.Render(documentTemplate, outputPath)
 	}
 	for _, postsPage := range website.Postspages {
-		Render(postspageTemplate, postsPage, outputPath)
+		postsPage.Render(postspageTemplate, outputPath)
 	}
 	for _, post := range posts {
-		Render(documentTemplate, post, outputPath)
+		post.Render(documentTemplate, outputPath)
 	}
 	theme.Copy(outputPath)
-}
-
-func Render(template *template.Template, webpage Urler, outputDirectory string) {
-	outputPath := filepath.Join(outputDirectory, webpage.Url())
-	file, err := os.Create(outputPath)
-	defer file.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-	if template == nil {
-		log.Fatalf("%v template is nil", template)
-	}
-	if err := template.Execute(file, webpage); err != nil {
-		log.Fatal(err)
-	}
 }
 
 func MakeOutputdirIfNotExists(outputDirectory string) {
