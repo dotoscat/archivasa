@@ -28,11 +28,18 @@ This is a command line interface. In your current working directory you need the
         * pages
         * posts
 
+plus a config file named *config.txt*
+
+the contents of this file may have the next, for example
+
+    title = My blog
+    postsperpage = 7
+
 then do this
 
     archivasa
     
-will generate a folder *output* in your CWD with the site ready to be uploaded anywhere
+this will generate a folder *output* in your CWD with the site ready to be uploaded anywhere
 
 ### Preview
 
