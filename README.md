@@ -1,21 +1,53 @@
 # archivasa
 
-A simple static blog generator written in GO. Straight to the point, minimal configuration
+A simple static blog generator written in GO. Straight to the point, minimal configuration.
 
 ## Features
 
-* Post, pages in Markdown
+* Post and pages in Markdown
 * Works in the current working directory
 * Can use themes
 * Support for markdown files
-* Output folder
-* Custom frontmatter
+
+## Installation
+
+    go install github.com/dotoscat/archivasa
+
+## Usage
+
+This is a command line interface. In your current working directory you need the next tree structure:
+
+    * theme
+        * css
+            * main.css
+        * templates
+            * basic.tmpl
+            * document.tmpl
+            * index.tmpl
+            * postspage.tmpl
+    * content
+        * pages
+        * posts
+
+then do this
+
+    archivasa
+    
+will generate a folder *output* in your CWD with the site ready to be uploaded anywhere
+
+### Preview
+
+It is recomended to use a local server to preview the generated site. For example, if you have Python installed you can make
+
+    python -m http.server -d output
+
+to serve the files
 
 ### Frontmatter
 
 Starts at the first file and ends with '---'
 
-    <tag>:<value>|<values>
+    <tag>=<value>[,<value, ...]
 
 #### Example
 
