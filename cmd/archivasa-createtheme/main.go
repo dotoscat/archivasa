@@ -58,13 +58,50 @@ const basicTemplate = `<!doctype html>
 </html>
 `
 
+const documentTemplate = `{{ template "basic.tmpl" }}
+{{ block "content" . }}
+<article>
+    {{ .Content }}
+</article>
+{{ end }}
+`
+
+const postspageTemplate = `{{ template "basic.tmpl" }}
+{{ block "content" . }}
+    <section>
+        <ul>
+        {{ range .Posts }}
+            <li>
+                <a href="{{ .URL }}">{{ .Date }} - {{ .Name }}</a>
+            </li>
+        {{ end }}
+        </ul>
+        <nav>
+            {{ if .Prev }}
+                <a href="{{ .Prev.URL }}">Prev</a>
+            {{ else if and (not .Prev) .Next }}
+                <span>First</span>
+            {{ end }}
+             | 
+            {{ if .Next}}
+                <a href="{{ .Next.URL }}">Next</a>
+            {{ else if and .Prev (not .Next) }}
+                <span>End</span>
+            {{ end }}
+        </nav>
+    </section>
+{{ end }}
+`
+
 var structure = [...]string{
 	"/theme/templates",
 	"/theme/css"}
 
 var files = map[string]string{
-	"/theme/css/main.css":         mainCSS,
-	"/theme/templates/basic.tmpl": basicTemplate}
+	"/theme/css/main.css":             mainCSS,
+	"/theme/templates/basic.tmpl":     basicTemplate,
+	"/theme/templates/document.tmpl":  documentTemplate,
+	"/theme/templates/postspage.tmpl": postspageTemplate}
 
 func main() {
 	pwd, err := os.Getwd()
