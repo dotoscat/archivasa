@@ -1,7 +1,86 @@
 package main
 
-import "fmt"
+import (
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
+)
+
+const mainCSS = `
+body {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    color: #333;
+    background-color: azure;
+    margin-left: auto;
+    margin-right: auto;
+    width: 80%;
+}
+
+header h1, section nav {
+    text-align: center;
+}
+
+footer {
+    font-size: small;
+}
+`
+
+const basicTemplate = `<!doctype html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ block "title" . }}{{ .Title }}{{ end }}</title>
+        <link rel="stylesheet" href="/css/main.css">
+        {{ block "styles" . }}
+        {{ end }}
+        {{ block "scripts" . }}
+        {{ end }}
+    </head>
+    <body>
+        <header>
+            <h1><a href="/">{{.Title}}</a></h1>
+            <nav>
+                <ul>
+                    {{ range .Pages }}<li><a href="{{ .URL }}">{{ .Name }}</a></li>
+                    {{ end }}
+                </ul>
+            </nav>
+        </header>
+        {{ block "content" . }}
+        {{ end }}
+        <footer>
+            {{ block "footer" . }}
+            {{ end }}
+        </footer>
+    </body>
+</html>
+`
+
+var structure = [...]string{
+	"/theme/templates",
+	"/theme/css"}
+
+var files = map[string]string{
+	"/theme/css/main.css":         mainCSS,
+	"/theme/templates/basic.tmpl": basicTemplate}
 
 func main() {
-	fmt.Println("Principal")
+	pwd, err := os.Getwd()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	for _, path := range structure {
+		err := os.MkdirAll(filepath.Join(pwd, path), os.ModeDir)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+	for path, content := range files {
+		err := ioutil.WriteFile(filepath.Join(pwd, path), []byte(content), os.ModePerm)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
 }
