@@ -53,6 +53,7 @@ const basicTemplate = `<!doctype html>
         <footer>
             {{ block "footer" . }}
             {{ end }}
+            <small>This site is synthetized by <a href="https://github.com/dotoscat/archivasa">archivasa</a></small>
         </footer>
     </body>
 </html>
