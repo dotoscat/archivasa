@@ -11,7 +11,18 @@ A simple static blog generator written in GO. Straight to the point, minimal con
 
 ## Installation
 
-    go install github.com/dotoscat/archivasa
+### First step
+
+    go clone https://gitgub.com/dotoscat/archivasa
+    cd archivasa
+
+### The main cli
+
+    go install gitgub.com/dotoscat/archivasa/cmd/archivasa
+
+### CLI for creating a theme for you
+
+    go install github.com/dotoscat/archivasa/cmd/archivasa-createtheme
 
 ## Usage
 
