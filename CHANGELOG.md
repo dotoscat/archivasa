@@ -7,6 +7,12 @@
 - Category support
 - Document templates, variables and so
 
+## [0.3.0]
+
+### Changed
+
+- Read files in content folder only with extension .md
+
 ## [0.2.0] 
 
 ### Added

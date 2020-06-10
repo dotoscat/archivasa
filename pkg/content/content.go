@@ -45,7 +45,7 @@ func readDir(dir string) Documents {
 	}
 	documents := make(Documents, 0)
 	for _, file := range files {
-		if file.IsDir() {
+		if file.IsDir() || filepath.Ext(file.Name()) != ".md" {
 			continue
 		}
 		filePath := filepath.Join(dir, file.Name())
