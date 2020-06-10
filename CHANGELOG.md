@@ -9,6 +9,10 @@
 
 ## [0.3.0]
 
+### Added
+
+- Support for "title" in front-matter to override taking the name by file name
+
 ### Changed
 
 - Read files in content folder only with extension .md

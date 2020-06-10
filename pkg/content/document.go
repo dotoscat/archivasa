@@ -28,9 +28,10 @@ import (
 )
 
 type Document struct {
-	Date time.Time
-	Tags []string
-	Path string
+	Date  time.Time
+	Tags  []string
+	Title string
+	Path  string
 }
 
 func (d *Document) String() string {
@@ -63,6 +64,8 @@ func NewDocument(path string) *Document {
 			document.Date = getDate(value)
 		case "tags":
 			document.Tags = getTags(value)
+		case "title":
+			document.Title = value
 		}
 	}
 	return &document
