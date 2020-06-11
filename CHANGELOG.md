@@ -11,6 +11,7 @@
 
 ### Added
 
+- version flag to know what version are you running
 - Support for "title" in front-matter to override taking the name by file name
 
 ### Changed

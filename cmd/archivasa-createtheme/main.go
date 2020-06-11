@@ -1,6 +1,8 @@
 package main
 
 import (
+	"flag"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -104,7 +106,15 @@ var files = map[string]string{
 	"/theme/templates/document.tmpl":  documentTemplate,
 	"/theme/templates/postspage.tmpl": postspageTemplate}
 
+const version = "0.3.0"
+
 func main() {
+	knowVersion := flag.Bool("version", false, "-version")
+	flag.Parse()
+	if *knowVersion {
+		fmt.Println(version)
+		return
+	}
 	pwd, err := os.Getwd()
 	if err != nil {
 		log.Fatalln(err)

@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -29,7 +30,15 @@ import (
 	"github.com/dotoscat/archivasa/pkg/theme"
 )
 
+const version = "0.3.0"
+
 func main() {
+	knowVersion := flag.Bool("version", false, "-version")
+	flag.Parse()
+	if *knowVersion {
+		fmt.Println(version)
+		return
+	}
 	cwd, error := os.Getwd()
 	if error != nil {
 		log.Fatal(error)
