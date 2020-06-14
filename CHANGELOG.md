@@ -6,6 +6,20 @@
 - Tag support
 - Category support
 - Document templates, variables and so
+- Copy all resources content from theme
+- Recognize for the template the current web page
+- Add button like style for links
+
+## [0.4.0] - 2020-
+
+### Added
+
+* normalize.css to the theme
+
+### Changed
+
+* line-height
+* max-width to max characters instead of a percentage
 
 ## [0.3.0]
 
