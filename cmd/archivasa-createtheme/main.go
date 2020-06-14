@@ -16,7 +16,9 @@ body {
     background-color: azure;
     margin-left: auto;
     margin-right: auto;
-    width: 80%;
+    max-width: 60rem;
+    line-height: 1.5rem;
+    padding: 1rem;
 }
 
 header h1, section nav {
@@ -34,6 +36,7 @@ const basicTemplate = `<!doctype html>
         <meta charset='utf-8'>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{{ block "title" . }}{{ .Title }}{{ end }}</title>
+        <link rel="stylesheet" href="/css/normalize.css">
         <link rel="stylesheet" href="/css/main.css">
         {{ block "styles" . }}
         {{ end }}
@@ -102,6 +105,7 @@ var structure = [...]string{
 
 var files = map[string]string{
 	"/theme/css/main.css":             mainCSS,
+	"/theme/css/normalize.css":        normalizeCSS,
 	"/theme/templates/basic.tmpl":     basicTemplate,
 	"/theme/templates/document.tmpl":  documentTemplate,
 	"/theme/templates/postspage.tmpl": postspageTemplate}
