@@ -110,25 +110,53 @@ var files = map[string]string{
 	"/theme/templates/document.tmpl":  documentTemplate,
 	"/theme/templates/postspage.tmpl": postspageTemplate}
 
-const version = "0.3.0"
+const version = "0.4.0"
+
+func copyFile(src, dst string) {
+	content, err := ioutil.ReadFile(src)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	if err := ioutil.WriteFile(dst, content, os.ModePerm); err != nil {
+		log.Fatalln(err)
+	}
+}
+
+func buildPaths(dst string, files map[string]string) map[string]string {
+	newPaths := make(map[string]string)
+	for path, content := range files {
+		newPath := filepath.Join(dst, path)
+		newPaths[newPath] = content
+	}
+	return newPaths
+}
+
+func copyFiles(files map[string]string) {
+
+}
 
 func main() {
 	knowVersion := flag.Bool("version", false, "-version")
+	ask := flag.Bool("noask", false, "No ask to overwrite each file (politely).")
 	flag.Parse()
 	if *knowVersion {
 		fmt.Println(version)
 		return
 	}
+	fmt.Println("ask: ", *ask)
 	pwd, err := os.Getwd()
 	if err != nil {
 		log.Fatalln(err)
 	}
 	for _, path := range structure {
+		fmt.Println(path)
+		continue
 		err := os.MkdirAll(filepath.Join(pwd, path), os.ModeDir)
 		if err != nil {
 			log.Fatalln(err)
 		}
 	}
+	os.Exit(0)
 	for path, content := range files {
 		err := ioutil.WriteFile(filepath.Join(pwd, path), []byte(content), os.ModePerm)
 		if err != nil {

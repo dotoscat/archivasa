@@ -9,6 +9,7 @@
 - Copy all resources content from theme
 - Recognize for the template the current web page
 - Add button like style for links
+- Add to createtheme a flag to ask if change file
 
 ## [0.4.0] - 2020-
 
