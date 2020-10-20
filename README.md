@@ -20,10 +20,6 @@ A simple static blog generator written in GO. Straight to the point, minimal con
 
     go install gitgub.com/dotoscat/archivasa/cmd/archivasa
 
-### CLI for creating a theme for you
-
-    go install github.com/dotoscat/archivasa/cmd/archivasa-createtheme
-
 ## Usage
 
 This is a command line interface. In your current working directory you need the next tree structure:
@@ -49,7 +45,7 @@ the contents of this file may have the next, for example
 then do this
 
     archivasa
-    
+
 this will generate a folder *output* in your CWD with the site ready to be uploaded anywhere
 
 ### Preview
