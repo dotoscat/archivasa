@@ -131,6 +131,16 @@ func buildPaths(dst string, files map[string]string) map[string]string {
 	return newPaths
 }
 
+func mkDirs(files map[string]string) error {
+	for path := range files {
+		err := os.MkdirAll(path, os.ModeDir)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func copyFiles(files map[string]string) {
 
 }
