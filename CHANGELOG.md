@@ -7,20 +7,19 @@
 - Category support
 - Document templates, variables and so
 - Copy all resources content from theme
-- Recognize for the template the current web page
-- Add button like style for links
-- Add to createtheme a flag to ask if change file
+- Image support
 
 ## [0.4.0] - 2020-
 
-### Added
-
-* normalize.css to the theme
-
 ### Changed
 
+* Copy recursively the theme folder
 * line-height
 * max-width to max characters instead of a percentage
+
+### Removed
+
+* archivasa-createtheme cli
 
 ## [0.3.0]
 
@@ -33,13 +32,13 @@
 
 - Read files in content folder only with extension .md
 
-## [0.2.0] 
+## [0.2.0]
 
 ### Added
 
 - archivasa-createtheme cli
 
-### Changed 
+### Changed
 
 - Move packages from module root to *pkg* folder
 - Move archivasa cli to *cmd* folder
