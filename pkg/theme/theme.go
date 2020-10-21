@@ -60,16 +60,23 @@ func (t *Theme) Templates(name string) *template.Template {
 
 // Copy copy the resources from the source to the output folder
 func (t *Theme) Copy(outputFolder string) {
-    CSSFolder := filepath.Join(t.folder, "css")
-    outputFolderCSSFolder := filepath.Join(outputFolder, "css")
-    fmt.Println(CSSFolder, outputFolderCSSFolder)
-    copyFolder(CSSFolder, outputFolderCSSFolder)
+    names := []string{
+        "css",
+        "js",
+        "images"}
+    for _, name := range names {
+        folder := filepath.Join(t.folder, name)
+        joinOutputFolder := filepath.Join(outputFolder, name)
+        fmt.Println(folder, joinOutputFolder)
+        copyFolder(folder, joinOutputFolder)
+    }
 }
 
-func copyFolder(src, dst string) {
+func copyFolder(src, dst string) error {
     files, err := ioutil.ReadDir(src)
     if err != nil {
-        log.Fatal(err)
+        log.Println(err)
+        return err
     }
     if _, err := os.Stat(dst); os.IsNotExist(err) {
         os.Mkdir(dst, os.ModePerm)
@@ -87,6 +94,7 @@ func copyFolder(src, dst string) {
         fmt.Println("copy:", fileSrc, fileDst)
         copyFile(fileSrc, fileDst)
     }
+    return nil
 }
 
 func copyFile(src, dst string) {
