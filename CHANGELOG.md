@@ -2,7 +2,6 @@
 
 ## Unreleased
 
-- Copy js and assets folders from the theme
 - Tag support
 - Category support
 - Document templates, variables and so
@@ -16,6 +15,7 @@
 * Copy recursively the theme folder
 * line-height
 * max-width to max characters instead of a percentage
+* Copy images, js and css folders from theme
 
 ### Removed
 

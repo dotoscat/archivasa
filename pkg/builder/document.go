@@ -43,6 +43,7 @@ type Document struct {
 }
 
 func NewDocument(website *Website, contentDocument *content.Document, prefix string) *Document {
+	fmt.Println("Whut??!!")
 	rawContent, err := ioutil.ReadFile(contentDocument.Path)
 	if err != nil {
 		log.Fatalln("error: ", contentDocument, " ; ", err)
