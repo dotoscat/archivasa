@@ -79,6 +79,8 @@ func copyFolder(src, dst, exclude string) error {
 			folderDst := filepath.Join(dst, file.Name())
 			copyFolder(folderSrc, folderDst, "")
 			continue
+		} else if file.IsDir() && file.Name() == exclude {
+			continue
 		}
 		fileSrc := filepath.Join(src, file.Name())
 		fileDst := filepath.Join(dst, file.Name())
