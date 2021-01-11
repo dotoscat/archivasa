@@ -60,10 +60,10 @@ func (t *Theme) Templates(name string) *template.Template {
 
 // Copy copy the resources from the source to the output folder
 func (t *Theme) Copy(outputFolder string) {
-	copyFolder(t.folder, outputFolder)
+	copyFolder(t.folder, outputFolder, "templates")
 }
 
-func copyFolder(src, dst string) error {
+func copyFolder(src, dst, exclude string) error {
 	files, err := ioutil.ReadDir(src)
 	if err != nil {
 		log.Println(err)
@@ -74,10 +74,10 @@ func copyFolder(src, dst string) error {
 	}
 	for _, file := range files {
 		fmt.Println("copy file", file.Name())
-		if file.IsDir() {
+		if file.IsDir() && file.Name() != exclude {
 			folderSrc := filepath.Join(src, file.Name())
 			folderDst := filepath.Join(dst, file.Name())
-			copyFolder(folderSrc, folderDst)
+			copyFolder(folderSrc, folderDst, "")
 			continue
 		}
 		fileSrc := filepath.Join(src, file.Name())
