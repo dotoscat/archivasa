@@ -19,38 +19,38 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package main
 
 import (
-    "flag"
-    "fmt"
-    "log"
-    "os"
+	"flag"
+	"fmt"
+	"log"
+	"os"
 
-    "github.com/dotoscat/archivasa/pkg/builder"
-    "github.com/dotoscat/archivasa/pkg/config"
-    "github.com/dotoscat/archivasa/pkg/content"
-    "github.com/dotoscat/archivasa/pkg/theme"
+	"github.com/dotoscat/archivasa/pkg/builder"
+	"github.com/dotoscat/archivasa/pkg/config"
+	"github.com/dotoscat/archivasa/pkg/content"
+	"github.com/dotoscat/archivasa/pkg/theme"
 )
 
-const version = "0.4.0"
+const version = "0.5.0"
 
 func main() {
-    knowVersion := flag.Bool("version", false, "-version")
-    flag.Parse()
-    if *knowVersion {
-        fmt.Println(version)
-        return
-    }
-    cwd, error := os.Getwd()
-    if error != nil {
-        log.Fatal(error)
-    }
-    config := config.Read(cwd)
-    theme := theme.Load(cwd)
-    content := content.Read(cwd)
-    fmt.Println(theme)
-    fmt.Println(config.Title)
-    fmt.Println(config.PostsPerPage)
-    fmt.Println(content.Pages)
-    fmt.Println(content.Posts)
-    fmt.Println("Current working directory", cwd)
-    builder.Run(config, &content, theme)
+	knowVersion := flag.Bool("version", false, "-version")
+	flag.Parse()
+	if *knowVersion {
+		fmt.Println(version)
+		return
+	}
+	cwd, error := os.Getwd()
+	if error != nil {
+		log.Fatal(error)
+	}
+	config := config.Read(cwd)
+	theme := theme.Load(cwd)
+	content := content.Read(cwd)
+	fmt.Println(theme)
+	fmt.Println(config.Title)
+	fmt.Println(config.PostsPerPage)
+	fmt.Println(content.Pages)
+	fmt.Println(content.Posts)
+	fmt.Println("Current working directory", cwd)
+	builder.Run(config, &content, theme)
 }
