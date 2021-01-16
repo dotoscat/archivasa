@@ -19,13 +19,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package theme
 
 import (
-	"fmt"
-	"io"
-	"io/ioutil"
 	"log"
-	"os"
 	"path/filepath"
 	"text/template"
+
+	"github.com/dotoscat/archivasa/pkg/util"
 )
 
 // Theme is a collection of templates and other resources from the cwd
@@ -60,46 +58,5 @@ func (t *Theme) Templates(name string) *template.Template {
 
 // Copy copy the resources from the source to the output folder
 func (t *Theme) Copy(outputFolder string) {
-	copyFolder(t.folder, outputFolder, "templates")
-}
-
-func copyFolder(src, dst, exclude string) error {
-	files, err := ioutil.ReadDir(src)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-	if _, err := os.Stat(dst); os.IsNotExist(err) {
-		os.Mkdir(dst, os.ModePerm)
-	}
-	for _, file := range files {
-		fmt.Println("copy file", file.Name())
-		if file.IsDir() && file.Name() != exclude {
-			folderSrc := filepath.Join(src, file.Name())
-			folderDst := filepath.Join(dst, file.Name())
-			copyFolder(folderSrc, folderDst, "")
-			continue
-		} else if file.IsDir() && file.Name() == exclude {
-			continue
-		}
-		fileSrc := filepath.Join(src, file.Name())
-		fileDst := filepath.Join(dst, file.Name())
-		fmt.Println("copy:", fileSrc, fileDst)
-		copyFile(fileSrc, fileDst)
-	}
-	return nil
-}
-
-func copyFile(src, dst string) {
-	srcFile, err := os.Open(src)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	dstFile, err := os.Create(dst)
-	if err != nil {
-		log.Fatalln(err)
-	}
-	if _, err := io.Copy(dstFile, srcFile); err != nil {
-		log.Fatalln(err)
-	}
+	util.CopyFolder(t.folder, outputFolder, "templates")
 }

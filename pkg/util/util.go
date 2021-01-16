@@ -19,6 +19,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 package util
 
 import (
+	"fmt"
+	"io"
+	"io/ioutil"
+	"log"
+	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -51,4 +57,47 @@ func ReadConfigFromString(content string) Config {
 		config[field] = value
 	}
 	return config
+}
+
+//CopyFolder copies a folder from src to dst. You can optionally exclude a directory with exclude
+func CopyFolder(src, dst, exclude string) error {
+	files, err := ioutil.ReadDir(src)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+	if _, err := os.Stat(dst); os.IsNotExist(err) {
+		os.Mkdir(dst, os.ModePerm)
+	}
+	for _, file := range files {
+		fmt.Println("copy file", file.Name())
+		if file.IsDir() && file.Name() != exclude {
+			folderSrc := filepath.Join(src, file.Name())
+			folderDst := filepath.Join(dst, file.Name())
+			CopyFolder(folderSrc, folderDst, "")
+			continue
+		} else if file.IsDir() && file.Name() == exclude {
+			continue
+		}
+		fileSrc := filepath.Join(src, file.Name())
+		fileDst := filepath.Join(dst, file.Name())
+		fmt.Println("copy:", fileSrc, fileDst)
+		CopyFile(fileSrc, fileDst)
+	}
+	return nil
+}
+
+//CopyFile copies a file from src to dst
+func CopyFile(src, dst string) {
+	srcFile, err := os.Open(src)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	dstFile, err := os.Create(dst)
+	if err != nil {
+		log.Fatalln(err)
+	}
+	if _, err := io.Copy(dstFile, srcFile); err != nil {
+		log.Fatalln(err)
+	}
 }
